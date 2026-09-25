@@ -1,10 +1,11 @@
 import type { MetadataRoute } from "next";
+import { connection } from "next/server";
 import { appUrl } from "@/lib/config";
 import { db } from "@/lib/db";
 
-export const revalidate = 3600;
-
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  // Render per request: the database isn't reachable at build time.
+  await connection();
   const base = appUrl();
   const now = new Date();
   const campaigns = await db.campaign.findMany({

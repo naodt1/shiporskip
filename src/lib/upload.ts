@@ -16,6 +16,8 @@ export async function storeImage(file: File): Promise<string> {
     const blob = await put(`projects/${name}`, file, { access: "public", contentType: file.type });
     return blob.url;
   }
+  // Serverless filesystems are read-only; local disk is a dev-only fallback.
+  if (process.env.VERCEL || process.env.NODE_ENV === "production") throw new Error("Image uploads need BLOB_READ_WRITE_TOKEN");
   const dir = path.join(process.cwd(), "public", "uploads");
   await mkdir(dir, { recursive: true });
   await writeFile(path.join(dir, name), Buffer.from(await file.arrayBuffer()));

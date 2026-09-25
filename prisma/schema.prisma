@@ -1,11 +1,10 @@
-// Local dev uses SQLite. For production switch provider to "postgresql"
-// and point DATABASE_URL at Postgres (the schema is portable).
+// Postgres everywhere. Locally: `npm run db:dev` starts one (no Docker).
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 

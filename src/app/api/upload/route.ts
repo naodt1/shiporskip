@@ -8,5 +8,10 @@ export async function POST(req: NextRequest) {
   if (!(file instanceof File)) return NextResponse.json({ error: "No file" }, { status: 400 });
   if (!allowedImage(file.type)) return NextResponse.json({ error: "Use PNG, JPG, WebP or GIF" }, { status: 400 });
   if (file.size > MAX_IMAGE_BYTES) return NextResponse.json({ error: "Max 4 MB" }, { status: 400 });
-  return NextResponse.json({ url: await storeImage(file) });
+  try {
+    return NextResponse.json({ url: await storeImage(file) });
+  } catch (e) {
+    console.error(e);
+    return NextResponse.json({ error: "Image uploads aren't set up yet" }, { status: 503 });
+  }
 }
