@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Avatar } from "@/components/Avatar";
 import { ArrowUp, Grid } from "@/components/icons";
@@ -8,9 +9,18 @@ import { getFeed, type Sort } from "@/lib/queries";
 
 const LABELS: Record<Sort, string> = { hot: "Hot", new: "New", ending: "Ending soon" };
 
-export async function generateMetadata({ searchParams }: PageProps<"/feed">) {
-  const sort = (await searchParams).sort as Sort;
-  return { title: `${LABELS[sort] ?? "Hot"} · ShipOrSkip` };
+const DESC: Record<Sort, string> = {
+  hot: "The side-project campaigns builders are voting on right now. Pick the one each maker should finish.",
+  new: "The newest side-project campaigns on ShipOrSkip. Be one of the first to vote.",
+  ending: "Side-project votes closing soon. Get your vote in before the builder commits.",
+};
+
+export async function generateMetadata({ searchParams }: PageProps<"/feed">): Promise<Metadata> {
+  const raw = (await searchParams).sort;
+  const sort: Sort = raw === "new" || raw === "ending" ? raw : "hot";
+  const title = sort === "hot" ? "Vote on side projects" : `${LABELS[sort]} side-project votes`;
+  const url = sort === "hot" ? "/feed" : `/feed?sort=${sort}`;
+  return { title, description: DESC[sort], alternates: { canonical: url }, openGraph: { title, description: DESC[sort], url } };
 }
 
 export default async function FeedPage({ searchParams }: PageProps<"/feed">) {
@@ -22,6 +32,7 @@ export default async function FeedPage({ searchParams }: PageProps<"/feed">) {
   return (
     <>
       <h1 className="m-0 mb-3.5 text-xl leading-tight font-bold">{LABELS[sort]}</h1>
+      <p className="sr-only">{DESC[sort]}</p>
       <div className="overflow-hidden rounded-[10px] border border-border bg-white">
         {items.length === 0 && <p className="m-0 px-4 py-6 text-center text-sm text-muted-2">No open campaigns yet. Be the first to post.</p>}
         {items.map((b, i) => (

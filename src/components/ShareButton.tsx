@@ -4,14 +4,23 @@ import { useEffect, useRef, useState } from "react";
 import { useApp } from "./AppContext";
 import { LinkIcon } from "./icons";
 
-export function ShareButton({ id }: { id: string }) {
+/** Copies a share link (or opens the native share sheet on touch devices). */
+export function ShareButton({ path, title, compact, label }: { path: string; title?: string; compact?: boolean; label?: string }) {
   const { toast } = useApp();
   const [copied, setCopied] = useState(false);
   const t = useRef<ReturnType<typeof setTimeout>>(undefined);
   useEffect(() => () => clearTimeout(t.current), []);
 
-  const share = () => {
-    const url = `${window.location.origin}/c/${id}`;
+  const share = async () => {
+    const url = window.location.origin + path;
+    if (navigator.share && window.matchMedia("(pointer: coarse)").matches) {
+      try {
+        await navigator.share({ url, title });
+        return;
+      } catch (e) {
+        if ((e as Error).name === "AbortError") return;
+      }
+    }
     const done = () => {
       setCopied(true);
       toast("Link copied");
@@ -21,6 +30,18 @@ export function ShareButton({ id }: { id: string }) {
     if (navigator.clipboard?.writeText) navigator.clipboard.writeText(url).then(done, done);
     else done();
   };
+
+  if (compact)
+    return (
+      <button
+        onClick={share}
+        aria-label={label ?? "Share"}
+        title={copied ? "Copied" : (label ?? "Share")}
+        className={`grid h-8 w-8 shrink-0 place-items-center rounded-md border bg-white hover:border-green hover:text-green ${copied ? "border-green text-green" : "border-outline text-muted-2"}`}
+      >
+        <LinkIcon size={14} />
+      </button>
+    );
 
   return (
     <button

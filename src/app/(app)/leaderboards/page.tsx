@@ -1,7 +1,11 @@
 import Link from "next/link";
 import { getBoard, type Board } from "@/lib/queries";
 
-export const metadata = { title: "Leaderboards · ShipOrSkip" };
+export const metadata = {
+  title: "Leaderboards",
+  description: "Fastest builders to ship what voters picked, the most-wanted unfinished projects, and voters with the best track record.",
+  alternates: { canonical: "/leaderboards" },
+};
 
 const TABS: { key: Board; label: string; note: string }[] = [
   { key: "shipped", label: "Shipped", note: "Builders who finished the project voters picked, fastest first." },

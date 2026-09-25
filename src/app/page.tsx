@@ -3,6 +3,7 @@ import { Avatar } from "@/components/Avatar";
 import { ChevronUp, Clock, GitHubMark, Grid } from "@/components/icons";
 import { LandingDemo } from "@/components/LandingDemo";
 import { getUser } from "@/lib/auth";
+import { appUrl } from "@/lib/config";
 import { timeShort } from "@/lib/format";
 import { getFeed, getShippedBoard } from "@/lib/queries";
 
@@ -10,8 +11,17 @@ export default async function Landing() {
   const user = await getUser();
   const [today, shipped] = await Promise.all([getFeed("hot", user?.id ?? null, 4), getShippedBoard(4)]);
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      { "@type": "WebSite", name: "ShipOrSkip", url: appUrl(), description: "Let builders pick which side project you finish." },
+      { "@type": "Organization", name: "ShipOrSkip", url: appUrl(), logo: `${appUrl()}/icon-512.png` },
+    ],
+  };
+
   return (
     <div className="min-h-screen">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
       <header className="sticky top-0 z-5 border-b border-border bg-white">
         <div className="mx-auto flex max-w-[1120px] items-center gap-6 px-4 py-3 sm:px-5">
           <Link href="/feed" className="font-mono text-base font-bold no-underline">shiporskip</Link>

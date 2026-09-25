@@ -3,7 +3,7 @@ import { MyProjects } from "@/components/MyProjects";
 import { getUser } from "@/lib/auth";
 import { getMyCampaigns } from "@/lib/queries";
 
-export const metadata = { title: "My projects · ShipOrSkip" };
+export const metadata = { title: "My projects", robots: { index: false, follow: false } };
 
 export default async function MePage({ searchParams }: PageProps<"/me">) {
   const user = await getUser();

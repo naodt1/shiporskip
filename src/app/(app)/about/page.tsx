@@ -1,4 +1,8 @@
-export const metadata = { title: "About · ShipOrSkip" };
+export const metadata = {
+  title: "About",
+  description: "ShipOrSkip helps indie hackers decide which unfinished side project to finish. Post 2–5 projects, builders vote, you get a clear answer.",
+  alternates: { canonical: "/about" },
+};
 
 export default function AboutPage() {
   return (

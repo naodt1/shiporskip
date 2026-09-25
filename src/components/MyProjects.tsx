@@ -67,7 +67,7 @@ export function MyProjects({ campaigns, selectedId }: { campaigns: MyCampaign[];
               {mb.title}
             </Link>
           </h2>
-          <ShareButton id={mb.id} />
+          <ShareButton path={`/c/${mb.id}`} title={mb.title} />
         </div>
         <p className="m-0 mb-2.5 text-sm font-semibold text-green">{headline}</p>
         <div className="flex flex-col gap-2">
