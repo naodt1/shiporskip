@@ -37,7 +37,7 @@ In production (`NODE_ENV=production`) the GitHub mock is disabled, and uploads r
    - Tables live in their own Postgres schema, `shiporskip` (override with `DB_SCHEMA`), so the database can be shared with other apps.
    - Vercel runs `scripts/vercel-build.mjs`: `prisma generate` → `prisma migrate deploy` over the direct URL (`DIRECT_URL`, `DATABASE_URL_UNPOOLED` or `POSTGRES_URL_NON_POOLING`) → `next build`. With no database configured it skips migrations with a warning instead of failing.
    - Schema changes: edit `schema.prisma`, run `npx prisma migrate dev --name <change>` locally, commit the migration.
-2. **GitHub OAuth app:** callback `$APP_URL/api/auth/github/callback`. Scopes requested: `read:user user:email public_repo`.
+2. **GitHub OAuth app:** callback `$APP_URL/api/auth/github/callback`. Scopes requested: `read:user user:email` (read-only; public repos are readable without extra scopes).
 3. **Stripe:** set `STRIPE_SECRET_KEY`, add a webhook to `$APP_URL/api/stripe/webhook` for `checkout.session.completed`, set `STRIPE_WEBHOOK_SECRET`.
 4. **Images:** set `BLOB_READ_WRITE_TOKEN` (Vercel Blob).
 5. Set `APP_URL` to the public origin.

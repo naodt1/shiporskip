@@ -2,11 +2,11 @@ import type { Metadata, Viewport } from "next";
 import { appUrl } from "@/lib/config";
 import "./globals.css";
 
-const description = "Post 2–5 unfinished side projects from GitHub. Other builders vote on the one you should finish. You ship the winner.";
+const description = "Too many side projects? Post 2–5 unfinished repos from GitHub, let other builders vote on the one you should finish, and ship the winner.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(appUrl()),
-  title: { default: "ShipOrSkip · Let builders pick which side project you finish", template: "%s · ShipOrSkip" },
+  title: { default: "ShipOrSkip · Let builders pick the side project you ship", template: "%s · ShipOrSkip" },
   description,
   applicationName: "ShipOrSkip",
   keywords: ["side projects", "indie hackers", "build in public", "GitHub", "community voting", "ship it", "unfinished projects", "maker community"],

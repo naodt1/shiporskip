@@ -4,7 +4,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "ShipOrSkip",
     short_name: "ShipOrSkip",
-    description: "Let builders pick which side project you finish.",
+    description: "Let builders pick the side project you ship.",
     start_url: "/feed",
     display: "standalone",
     background_color: "#fafaf8",

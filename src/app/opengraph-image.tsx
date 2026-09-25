@@ -13,8 +13,8 @@ export default async function Image() {
       <div style={{ width: "100%", height: "100%", display: "flex", background: C.bg, padding: 64, gap: 56, color: C.ink, fontFamily: "Geist" }}>
         <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
           <Brand />
-          <div style={{ display: "flex", fontSize: 68, fontWeight: 700, lineHeight: 1.05, letterSpacing: -2, marginTop: 56 }}>Stop starting. Let builders pick the one you finish.</div>
-          <div style={{ display: "flex", fontSize: 28, color: C.muted, marginTop: 24 }}>Post 2–5 unfinished GitHub projects. The community votes. You ship the winner.</div>
+          <div style={{ display: "flex", fontSize: 68, fontWeight: 700, lineHeight: 1.05, letterSpacing: -2, marginTop: 56 }}>You can’t finish them all. Let builders pick the one you ship.</div>
+          <div style={{ display: "flex", fontSize: 28, color: C.muted, marginTop: 24 }}>Post 2–5 half-built repos. Builders vote for 3 days. You ship the winner.</div>
         </div>
         <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", gap: 14, width: 420 }}>
           {DEMO.map(([name, pct], i) => (

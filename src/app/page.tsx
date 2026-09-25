@@ -3,7 +3,7 @@ import { Avatar } from "@/components/Avatar";
 import { ChevronUp, Clock, GitHubMark, Grid } from "@/components/icons";
 import { LandingDemo } from "@/components/LandingDemo";
 import { getUser } from "@/lib/auth";
-import { appUrl } from "@/lib/config";
+import { BOOST_HOURS, BOOST_PRICE_CENTS, CAMPAIGN_DAYS, MAX_PROJECTS, MIN_COMMITS, MIN_PROJECTS, appUrl } from "@/lib/config";
 import { timeShort } from "@/lib/format";
 import { getFeed, getShippedBoard } from "@/lib/queries";
 
@@ -14,7 +14,7 @@ export default async function Landing() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@graph": [
-      { "@type": "WebSite", name: "ShipOrSkip", url: appUrl(), description: "Let builders pick which side project you finish." },
+      { "@type": "WebSite", name: "ShipOrSkip", url: appUrl(), description: "Too many side projects? Other builders vote on the one you should ship." },
       { "@type": "Organization", name: "ShipOrSkip", url: appUrl(), logo: `${appUrl()}/icon-512.png` },
     ],
   };
@@ -27,7 +27,7 @@ export default async function Landing() {
           <Link href="/feed" className="font-mono text-base font-bold no-underline">shiporskip</Link>
           <nav className="hidden gap-5 text-[15px] sm:flex">
             <a href="#how" className="text-muted no-underline">How it works</a>
-            <a href="#today" className="text-muted no-underline">Today</a>
+            <a href="#today" className="text-muted no-underline">Voting now</a>
           </nav>
           <div className="ml-auto flex items-center gap-2 sm:gap-2.5">
             {!user && <Link href="/feed?login=1" className="px-2 py-[7px] text-[15px] whitespace-nowrap no-underline">Log in</Link>}
@@ -39,17 +39,20 @@ export default async function Landing() {
       <section className="mx-auto grid max-w-[1120px] grid-cols-[repeat(auto-fit,minmax(min(100%,420px),1fr))] items-center gap-10 px-4 pt-10 pb-12 sm:gap-12 sm:px-5 sm:pt-18 sm:pb-14">
         <div>
           <span className="mb-4.5 inline-flex items-center gap-1.5 rounded-full bg-green-tint-2 px-2.5 py-[3px] text-[13px] font-semibold text-green-text">
-            For indie hackers with too many side projects
+            For builders with a graveyard of side projects
           </span>
-          <h1 className="m-0 mb-4 text-[clamp(36px,5vw,54px)] leading-[1.05] font-bold tracking-[-.02em] text-balance">Stop starting. Let builders pick the one you finish.</h1>
-          <p className="m-0 mb-7 max-w-[460px] text-lg text-pretty text-muted">Post 2–5 unfinished projects from GitHub. The community votes. You ship the winner.</p>
+          <h1 className="m-0 mb-4 text-[clamp(36px,5vw,54px)] leading-[1.05] font-bold tracking-[-.02em] text-balance">You can’t finish them all. Let builders pick the one you ship.</h1>
+          <p className="m-0 mb-7 max-w-[460px] text-lg text-pretty text-muted">
+            Line up {MIN_PROJECTS}–{MAX_PROJECTS} half-built repos. For {CAMPAIGN_DAYS} days, other indie hackers vote and tell you why. Then you commit to the winner and actually ship it.
+          </p>
           <div className="flex flex-wrap gap-3">
             <Link href="/feed?post=1" className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-green px-5 py-3 whitespace-nowrap sm:flex-none text-base font-semibold text-white no-underline hover:bg-green-hover hover:text-white">
               <GitHubMark />
               Post from GitHub
             </Link>
-            <Link href="/feed" className="flex-1 rounded-lg border border-outline bg-white px-5 py-[11px] text-center text-base font-semibold whitespace-nowrap no-underline sm:flex-none">Start voting</Link>
+            <Link href="/feed" className="flex-1 rounded-lg border border-outline bg-white px-5 py-[11px] text-center text-base font-semibold whitespace-nowrap no-underline sm:flex-none">Vote on projects</Link>
           </div>
+          <p className="m-0 mt-3.5 text-[13px] text-muted-3">Free to post. Read-only GitHub access.</p>
         </div>
         <LandingDemo />
       </section>
@@ -58,9 +61,9 @@ export default async function Landing() {
         <h2 className="m-0 mb-5 text-2xl font-bold">How it works</h2>
         <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,240px),1fr))] gap-3.5">
           {[
-            ["01", "Connect GitHub", "Pick 2–5 repos you've started. Add an image and an offer."],
-            ["02", "Builders vote", "One tap per campaign, with an optional reason."],
-            ["03", "Ship the winner", "Commit to it. Voters get pinged when it launches."],
+            ["01", "Line up your contenders", `Pick ${MIN_PROJECTS}–${MAX_PROJECTS} public repos you’ve started but not released. Add a screenshot and an early-access offer.`],
+            ["02", "Builders vote, with reasons", `Campaigns run ${CAMPAIGN_DAYS} days. One vote per person, plus a line on why. Voters unlock your offer.`],
+            ["03", "Commit and ship", "Publicly commit to the winner, then mark it shipped when it’s live. No more maybe-next-weekend."],
           ].map(([n, t, d]) => (
             <div key={n} className="rounded-[10px] border border-border bg-white p-5">
               <div className="mb-2.5 font-mono text-[13px] font-bold text-green">{n}</div>
@@ -74,11 +77,11 @@ export default async function Landing() {
       <section id="today" className="mx-auto flex max-w-[1120px] flex-wrap items-start gap-7 px-4 pt-4 pb-12 sm:px-5 sm:pb-16">
         <div className="min-w-0 flex-[2_1_520px] max-sm:basis-full">
           <div className="mb-3.5 flex items-baseline justify-between">
-            <h2 className="m-0 text-xl font-bold sm:text-2xl">Top campaigns today</h2>
+            <h2 className="m-0 text-xl font-bold sm:text-2xl">Voting now</h2>
             <Link href="/feed" className="text-sm font-semibold text-green no-underline">See all →</Link>
           </div>
           <div className="overflow-hidden rounded-[10px] border border-border bg-white">
-            {today.length === 0 && <p className="m-0 px-4 py-6 text-center text-sm text-muted-2">No campaigns yet.</p>}
+            {today.length === 0 && <p className="m-0 px-4 py-6 text-center text-sm text-muted-2">No campaigns yet. <Link href="/feed?post=1" className="font-semibold text-green no-underline">Post the first one →</Link></p>}
             {today.map((t, i) => (
               <div key={t.id} className={`grid grid-cols-[28px_minmax(0,1fr)_auto] items-center gap-3 px-3.5 py-3.5 sm:gap-3.5 sm:px-4 ${i ? "border-t border-divider" : ""}`}>
                 <span className="font-mono text-sm font-bold text-muted-3">{i + 1}</span>
@@ -106,7 +109,7 @@ export default async function Landing() {
         <aside className="flex flex-[1_1_280px] flex-col gap-3.5 max-sm:basis-full">
           <div className="rounded-[10px] border border-border bg-white p-4">
             <div className="mb-2.5 text-[11px] tracking-[.06em] text-muted-3 uppercase">Shipped after the vote</div>
-            {shipped.length === 0 && <div className="text-sm text-muted-3">First ship coming soon.</div>}
+            {shipped.length === 0 && <div className="text-sm text-muted-3">Nobody’s shipped yet. Could be you.</div>}
             {shipped.map((s, i) => (
               <div key={i} className={`flex justify-between gap-2.5 py-[7px] text-[15px] ${i ? "border-t border-divider" : ""}`}>
                 <span><b>{s.title}</b> <span className="text-muted-3">{s.sub}</span></span>
@@ -117,7 +120,7 @@ export default async function Landing() {
           <div className="rounded-[10px] border border-border bg-white p-4">
             <div className="mb-2.5 text-[11px] tracking-[.06em] text-muted-3 uppercase">Rules</div>
             <div className="flex flex-col gap-2 text-[15px]">
-              {["Real GitHub repos only", "Started, not finished", "Free to post. $9 to boost."].map((r) => (
+              {["Public GitHub repos only", `Started: ${MIN_COMMITS}+ commits`, "Not finished: no release yet", `Free to post. $${BOOST_PRICE_CENTS / 100} to boost for ${BOOST_HOURS}h.`].map((r) => (
                 <span key={r} className="flex gap-2"><span className="font-bold text-green">✓</span>{r}</span>
               ))}
             </div>
@@ -129,7 +132,7 @@ export default async function Landing() {
         <div className="flex flex-wrap items-center justify-between gap-6 rounded-[14px] bg-ink px-6 py-8 text-white sm:px-8 sm:py-10">
           <div>
             <h2 className="m-0 mb-1.5 text-2xl leading-[1.15] font-bold sm:text-[28px]">Which one should you finish?</h2>
-            <p className="m-0 text-faint">Find out in 3 days.</p>
+            <p className="m-0 text-faint">Stop guessing. Get a straight answer in {CAMPAIGN_DAYS} days.</p>
           </div>
           <Link href="/feed?post=1" className="rounded-lg bg-green px-5.5 py-3 text-base font-semibold text-white no-underline hover:bg-green-hover hover:text-white">Post your projects</Link>
         </div>
@@ -138,7 +141,7 @@ export default async function Landing() {
       <footer className="border-t border-border">
         <div className="mx-auto flex max-w-[1120px] flex-wrap justify-between gap-4 px-4 py-5 text-sm text-muted-3 sm:px-5">
           <span className="font-mono">shiporskip</span>
-          <span>Made by Your Name</span>
+          <span>For people who start more than they finish.</span>
         </div>
       </footer>
     </div>
