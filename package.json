@@ -8,9 +8,9 @@
     "start": "next start",
     "lint": "eslint",
     "db:seed": "tsx prisma/seed.ts",
-    "postinstall": "prisma generate",
+    "postinstall": "prisma generate || true",
     "typecheck": "tsc --noEmit",
-    "vercel-build": "prisma generate && prisma migrate deploy && next build",
+    "vercel-build": "node scripts/vercel-build.mjs",
     "db:dev": "prisma dev -d -n shiporskip",
     "db:migrate": "prisma migrate deploy"
   },

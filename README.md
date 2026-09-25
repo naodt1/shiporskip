@@ -32,8 +32,10 @@ In production (`NODE_ENV=production`) the GitHub mock is disabled, and uploads r
 
 ## Production setup
 
-1. **Database:** add Postgres to the Vercel project (e.g. Neon from the Marketplace) so `DATABASE_URL` is set. Vercel runs the `vercel-build` script, which applies migrations (`prisma migrate deploy`) before `next build`. If you use a pooled/PgBouncer URL, append `?pgbouncer=true`.
-   Schema changes: edit `schema.prisma`, then `npx prisma migrate dev --name <change>` against your local DB and commit the migration.
+1. **Database:** in Vercel → Storage → Create Database → Neon (Postgres), connected to this project for all environments. It sets the connection env vars; don't also add an empty `DATABASE_URL` by hand.
+   - The app accepts `DATABASE_URL`, `POSTGRES_PRISMA_URL` or `POSTGRES_URL` (see `src/lib/db-url.mjs`); pooled hosts get `pgbouncer=true` automatically.
+   - Vercel runs `scripts/vercel-build.mjs`: `prisma generate` → `prisma migrate deploy` over the direct URL (`DIRECT_URL`, `DATABASE_URL_UNPOOLED` or `POSTGRES_URL_NON_POOLING`) → `next build`. With no database configured it skips migrations with a warning instead of failing.
+   - Schema changes: edit `schema.prisma`, run `npx prisma migrate dev --name <change>` locally, commit the migration.
 2. **GitHub OAuth app:** callback `$APP_URL/api/auth/github/callback`. Scopes requested: `read:user user:email public_repo`.
 3. **Stripe:** set `STRIPE_SECRET_KEY`, add a webhook to `$APP_URL/api/stripe/webhook` for `checkout.session.completed`, set `STRIPE_WEBHOOK_SECRET`.
 4. **Images:** set `BLOB_READ_WRITE_TOKEN` (Vercel Blob).
