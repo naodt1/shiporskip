@@ -19,5 +19,13 @@ export const HANDLE_RE = /^[a-z0-9_.-]{2,}$/i;
 export const EMAIL_RE = /^\S+@\S+\.\S+$/;
 export const MIN_PASSWORD = 8;
 
-export const appUrl = () => (process.env.APP_URL || "http://localhost:3000").replace(/\/$/, "");
+/**
+ * Public origin for share links, sitemap and the OAuth redirect_uri.
+ * APP_URL wins; on Vercel it falls back to the production domain Vercel exposes.
+ */
+export const appUrl = () => {
+  const explicit = process.env.APP_URL?.trim();
+  const vercel = process.env.VERCEL_PROJECT_PRODUCTION_URL?.trim();
+  return (explicit || (vercel ? `https://${vercel}` : "http://localhost:3000")).replace(/\/+$/, "");
+};
 export const shareUrl = (id: string) => `${appUrl()}/c/${id}`;

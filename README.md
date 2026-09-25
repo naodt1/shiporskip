@@ -40,7 +40,7 @@ In production (`NODE_ENV=production`) the GitHub mock is disabled, and uploads r
 2. **GitHub OAuth app:** callback `$APP_URL/api/auth/github/callback`. Scopes requested: `read:user user:email` (read-only; public repos are readable without extra scopes).
 3. **Stripe:** set `STRIPE_SECRET_KEY`, add a webhook to `$APP_URL/api/stripe/webhook` for `checkout.session.completed`, set `STRIPE_WEBHOOK_SECRET`.
 4. **Images:** set `BLOB_READ_WRITE_TOKEN` (Vercel Blob).
-5. Set `APP_URL` to the public origin.
+5. Set `APP_URL` to the public origin (e.g. `https://shiporskip-liart.vercel.app`). If unset on Vercel, the production domain (`VERCEL_PROJECT_PRODUCTION_URL`) is used. It must match the OAuth app's redirect URI exactly.
 
 ## Where things live
 
