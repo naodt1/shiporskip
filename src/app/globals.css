@@ -1,26 +1,59 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --font-sans: system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, Menlo, monospace;
+
+  --color-ink: #1a1a1a;
+  --color-ink-hover: #333;
+  --color-bg: #fafaf8;
+  --color-card: #fff;
+  --color-border: #e6e6e2;
+  --color-divider: #eeeeea;
+  --color-outline: #d6d6d0;
+  --color-dash: #c8c8c2;
+  --color-muted: #55554f;
+  --color-muted-2: #6b6b66;
+  --color-muted-3: #8a8a84;
+  --color-faint: #b5b5ae;
+  --color-fill: #f0f0ec;
+  --color-fill-2: #f4f4f0;
+  --color-fill-3: #ecece6;
+  --color-green: #2f7a4a;
+  --color-green-hover: #256a3e;
+  --color-green-tint: #d4ecdc;
+  --color-green-tint-2: #e7f4ec;
+  --color-green-tint-3: #f3faf5;
+  --color-green-text: #1f5c36;
+  --color-boost: #fff4cc;
+  --color-boost-text: #6b5400;
+  --color-urgent: #b3261e;
+  --color-urgent-bg: #fdecea;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--color-bg);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.5;
   }
+  a { color: var(--color-ink); }
+  a:hover { color: var(--color-green); }
+  button, input, textarea { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+  button:disabled { cursor: not-allowed; }
+  :focus-visible { outline: 2px solid var(--color-green); outline-offset: 2px; }
+  ::selection { background: var(--color-green-tint); }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Unlayered on purpose: stops iOS Safari zooming into inputs under 16px. */
+@media (max-width: 640px) {
+  input, textarea, select { font-size: 16px !important; }
 }
+
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }

@@ -1,0 +1,98 @@
+// Local dev uses SQLite. For production switch provider to "postgresql"
+// and point DATABASE_URL at Postgres (the schema is portable).
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  handle       String   @unique
+  email        String?  @unique
+  passwordHash String?
+  githubId     String?  @unique
+  githubLogin  String?
+  githubToken  String?
+  avatarUrl    String?
+  createdAt    DateTime @default(now())
+
+  sessions  Session[]
+  campaigns Campaign[]
+  votes     Vote[]
+}
+
+model Session {
+  id        String   @id
+  userId    String
+  expiresAt DateTime
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Campaign {
+  id               String    @id @default(cuid())
+  userId           String
+  title            String?
+  closesAt         DateTime
+  boostedUntil     DateTime?
+  status           String    @default("open") // open | closed
+  shippedProjectId String?
+  shippedAt        DateTime?
+  createdAt        DateTime  @default(now())
+
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  projects   Project[]
+  votes      Vote[]
+  commitment Commitment?
+
+  @@index([createdAt])
+  @@index([closesAt])
+}
+
+model Project {
+  id           String   @id @default(cuid())
+  campaignId   String
+  repoFullName String
+  name         String
+  oneliner     String
+  commits      Int
+  lastPushAt   DateTime
+  imageUrl     String?
+  offer        String?
+  promoCode    String?
+  position     Int      @default(0)
+
+  campaign Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  votes    Vote[]
+
+  @@index([campaignId])
+}
+
+model Vote {
+  userId     String
+  campaignId String
+  projectId  String
+  reason     String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  campaign Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  project  Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@id([userId, campaignId])
+  @@index([projectId])
+}
+
+model Commitment {
+  campaignId String   @id
+  projectId  String
+  createdAt  DateTime @default(now())
+
+  campaign Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+}

@@ -1,36 +1,49 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ShipOrSkip
 
-## Getting Started
+Indie hackers post 2–5 unfinished GitHub side projects; other builders vote on the one to finish.
+Built from `../design_handoff_shiporskip`.
 
-First, run the development server:
+**Stack:** Next.js 16 (App Router, server actions) · Tailwind v4 · Prisma 6 · cookie sessions + bcrypt · GitHub OAuth · Stripe Checkout.
+
+## Run locally
 
 ```bash
+npm install
+npm run db:push     # create prisma/dev.db (SQLite)
+npm run db:seed     # design's placeholder data
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Demo login: `you@example.com` / `password123` (every seeded named user, e.g. `mara@example.com`, uses the same password).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+With the `.env` keys left empty, everything works locally:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Missing key | Dev fallback |
+| --- | --- |
+| `GITHUB_CLIENT_ID/SECRET` | "Continue with GitHub" signs in as `@you`; "Connect GitHub" lists the mock repos from the design |
+| `STRIPE_SECRET_KEY` | Boosts apply instantly, no payment |
+| `BLOB_READ_WRITE_TOKEN` | Images are written to `public/uploads` (dev only — not served by `next start`) |
 
-## Learn More
+In production (`NODE_ENV=production`) the GitHub mock is disabled.
 
-To learn more about Next.js, take a look at the following resources:
+## Production setup
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. **Database:** set `provider = "postgresql"` in `prisma/schema.prisma` and point `DATABASE_URL` at Postgres.
+2. **GitHub OAuth app:** callback `$APP_URL/api/auth/github/callback`. Scopes requested: `read:user user:email public_repo`.
+3. **Stripe:** set `STRIPE_SECRET_KEY`, add a webhook to `$APP_URL/api/stripe/webhook` for `checkout.session.completed`, set `STRIPE_WEBHOOK_SECRET`.
+4. **Images:** set `BLOB_READ_WRITE_TOKEN` (Vercel Blob).
+5. Set `APP_URL` to the public origin.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Where things live
 
-## Deploy on Vercel
+- `src/lib/config.ts` — rules: `MIN_COMMITS`, `ineligible()`, campaign length, boost price/duration.
+- `src/lib/queries.ts` — all reads. Promo codes are stripped here for anyone who hasn't voted (and isn't the owner).
+- `src/app/actions.ts` — all writes (auth, vote, reason, publish, boost, commit, mark shipped). Eligibility is re-checked against GitHub on publish.
+- `src/app/api/*` — GitHub OAuth, Stripe webhook, image upload.
+- `src/components/AppShell.tsx` — header, sidebar, auth modal/post panel, toast, login gating (`gate()` runs the attempted action after login).
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Not built yet
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Password reset email ("Forgot?" currently says it's unavailable).
+- Notifying voters when a committed project ships.
+- The prototype's ad rails (`showAds`, off in the design).
