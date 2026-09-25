@@ -12,7 +12,7 @@
     "typecheck": "tsc --noEmit",
     "vercel-build": "node scripts/vercel-build.mjs",
     "db:dev": "prisma dev -d -n shiporskip",
-    "db:migrate": "prisma migrate deploy"
+    "db:migrate": "node scripts/migrate.mjs"
   },
   "dependencies": {
     "@prisma/client": "^6.19.3",

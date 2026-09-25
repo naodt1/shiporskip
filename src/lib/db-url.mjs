@@ -14,6 +14,21 @@ export const RUNTIME_VARS = ["DATABASE_URL", "POSTGRES_PRISMA_URL", "POSTGRES_UR
 /** Direct URL for migrations (poolers break `prisma migrate`). */
 export const DIRECT_VARS = ["DIRECT_URL", "DATABASE_URL_UNPOOLED", "POSTGRES_URL_NON_POOLING"];
 
+/**
+ * Keep our tables in their own Postgres schema so the app can share a
+ * database with other things (e.g. an existing `public."User"` table).
+ * Override with DB_SCHEMA, or put `schema=` in the URL yourself.
+ */
+function withSchema(url) {
+  try {
+    const u = new URL(url);
+    if (!u.searchParams.has("schema")) u.searchParams.set("schema", process.env.DB_SCHEMA?.trim() || "shiporskip");
+    return u.toString();
+  } catch {
+    return url;
+  }
+}
+
 /** PgBouncer in transaction mode needs Prisma's pgbouncer flag. */
 function withPoolerFlag(url) {
   try {
@@ -29,7 +44,7 @@ function withPoolerFlag(url) {
 /** @returns {{ name: string, url: string } | null} */
 export function runtimeDbUrl() {
   const hit = first(RUNTIME_VARS);
-  return hit && { ...hit, url: withPoolerFlag(hit.url) };
+  return hit && { ...hit, url: withSchema(withPoolerFlag(hit.url)) };
 }
 
 /** Migrations need a plain session connection: drop pooler-only flags. */
@@ -47,5 +62,5 @@ function withoutPoolerFlags(url) {
 /** @returns {{ name: string, url: string } | null} */
 export function directDbUrl() {
   const hit = first(DIRECT_VARS) ?? first(RUNTIME_VARS);
-  return hit && { ...hit, url: withoutPoolerFlags(hit.url) };
+  return hit && { ...hit, url: withSchema(withoutPoolerFlags(hit.url)) };
 }

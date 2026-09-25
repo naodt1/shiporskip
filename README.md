@@ -16,7 +16,7 @@ npm run db:seed     # design's placeholder data
 npm run dev
 ```
 
-`db:dev` prints the connection string; if the port differs, update `DATABASE_URL`. The local server takes one connection at a time, hence `pgbouncer=true&connection_limit=1` in the URL.
+`db:dev` prints the connection string; if the port differs, update `DATABASE_URL`. The local server takes one connection at a time, hence `pgbouncer=true&connection_limit=1` in the URL. If a command fails with `prepared statement "s0" already exists`, restart it: `npx prisma dev stop shiporskip && npm run db:dev`.
 
 Demo login: `you@example.com` / `password123` (every seeded named user, e.g. `mara@example.com`, uses the same password).
 
@@ -34,6 +34,7 @@ In production (`NODE_ENV=production`) the GitHub mock is disabled, and uploads r
 
 1. **Database:** in Vercel → Storage → Create Database → Neon (Postgres), connected to this project for all environments. It sets the connection env vars; don't also add an empty `DATABASE_URL` by hand.
    - The app accepts `DATABASE_URL`, `POSTGRES_PRISMA_URL` or `POSTGRES_URL` (see `src/lib/db-url.mjs`); pooled hosts get `pgbouncer=true` automatically.
+   - Tables live in their own Postgres schema, `shiporskip` (override with `DB_SCHEMA`), so the database can be shared with other apps.
    - Vercel runs `scripts/vercel-build.mjs`: `prisma generate` → `prisma migrate deploy` over the direct URL (`DIRECT_URL`, `DATABASE_URL_UNPOOLED` or `POSTGRES_URL_NON_POOLING`) → `next build`. With no database configured it skips migrations with a warning instead of failing.
    - Schema changes: edit `schema.prisma`, run `npx prisma migrate dev --name <change>` locally, commit the migration.
 2. **GitHub OAuth app:** callback `$APP_URL/api/auth/github/callback`. Scopes requested: `read:user user:email public_repo`.

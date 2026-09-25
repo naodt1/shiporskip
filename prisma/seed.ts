@@ -2,8 +2,12 @@
 // Demo login: you@example.com / password123
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import { runtimeDbUrl } from "../src/lib/db-url.mjs";
 
-const db = new PrismaClient();
+try {
+  process.loadEnvFile(".env");
+} catch {}
+const db = new PrismaClient({ datasourceUrl: runtimeDbUrl()?.url });
 const DAY = 86_400_000;
 const now = Date.now();
 const ago = (d: number) => new Date(now - d * DAY);
