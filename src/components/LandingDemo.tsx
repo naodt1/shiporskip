@@ -39,12 +39,12 @@ export function LandingDemo() {
                 <span className="font-semibold">{r[0]}</span>
                 <span className="truncate text-[13px] text-muted-2">{r[1]}</span>
               </span>
-              <span className={`relative font-mono text-sm font-semibold ${voted ? "text-ink" : "text-green"}`}>{voted ? p : "Vote"}</span>
+              <span className={`relative font-mono text-sm font-semibold ${voted ? "text-ink" : "text-green"}`}>{voted ? p : "Ship"}</span>
             </button>
           );
         })}
       </div>
-      <div className="mt-2.5 font-mono text-xs text-muted-3">{voted ? "✓ voted · tap another to switch" : "Try it. Tap one."}</div>
+      <div className="mt-2.5 font-mono text-xs text-muted-3">{voted ? "✓ your pick · tap another to switch" : "Try it. Tap the one you’d ship."}</div>
     </div>
   );
 }

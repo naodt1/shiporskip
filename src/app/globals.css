@@ -1,8 +1,9 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-mono: ui-monospace, Menlo, monospace;
+  /* Brand type: Geist (self-hosted in src/app/layout.tsx). */
+  --font-sans: var(--font-geist), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, Menlo, monospace;
 
   --color-ink: #1a1a1a;
   --color-ink-hover: #333;
@@ -25,6 +26,7 @@
   --color-green-tint-2: #e7f4ec;
   --color-green-tint-3: #f3faf5;
   --color-green-text: #1f5c36;
+  --color-green-bright: #7fd19b; /* green on dark backgrounds */
   --color-boost: #fff4cc;
   --color-boost-text: #6b5400;
   --color-urgent: #b3261e;
@@ -40,6 +42,8 @@
     font-family: var(--font-sans);
     font-size: 16px;
     line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
   a { color: var(--color-ink); }
   a:hover { color: var(--color-green); }
@@ -57,3 +61,19 @@
 
 .no-scrollbar { scrollbar-width: none; }
 .no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* Brand backdrop: faint graph-paper grid with a green glow, fading out toward the bottom. */
+.brand-grid { position: relative; isolation: isolate; }
+.brand-grid::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    radial-gradient(ellipse 70% 60% at 75% 10%, color-mix(in srgb, var(--color-green) 10%, transparent), transparent 70%),
+    linear-gradient(to right, color-mix(in srgb, var(--color-ink) 5%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--color-ink) 5%, transparent) 1px, transparent 1px);
+  background-size: 100% 100%, 32px 32px, 32px 32px;
+  mask-image: linear-gradient(to bottom, #000 55%, transparent);
+}

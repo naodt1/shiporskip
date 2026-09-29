@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PageHeader } from "@/components/PageHeader";
 import { getBoard, type Board } from "@/lib/queries";
 
 export const metadata = {
@@ -20,8 +21,8 @@ export default async function LeaderboardsPage({ searchParams }: PageProps<"/lea
 
   return (
     <div className="max-w-[680px]">
-      <h1 className="m-0 mb-1 text-xl font-bold">Leaderboards</h1>
-      <div className="mt-2.5 mb-3 flex w-max max-w-full flex-wrap gap-1 rounded-lg bg-fill p-1">
+      <PageHeader eyebrow="Leaderboards" title="Who actually ships">Talk is cheap. These builders finished what voters picked, and these voters called it.</PageHeader>
+      <div className="mb-3 flex w-max max-w-full flex-wrap gap-1 rounded-lg bg-fill p-1">
         {TABS.map((t) => {
           const on = t.key === tab.key;
           return (
@@ -37,7 +38,7 @@ export default async function LeaderboardsPage({ searchParams }: PageProps<"/lea
       </div>
       <p className="m-0 mb-3 text-sm text-muted-3">{tab.note}</p>
       <div className="rounded-[10px] border border-border bg-white">
-        {rows.length === 0 && <p className="m-0 px-3.5 py-5 text-center text-sm text-muted-2">Nothing here yet.</p>}
+        {rows.length === 0 && <p className="m-0 px-3.5 py-8 text-center text-sm text-muted-2">No one’s on the board yet. First to ship takes the top spot.</p>}
         {rows.map((r, i) => (
           <div key={i} className={`grid grid-cols-[36px_minmax(0,1fr)_auto] items-center gap-3 px-3.5 py-2 ${i ? "border-t border-divider" : ""}`}>
             <span className={`font-mono text-sm font-bold ${i < 3 ? "text-green" : "text-muted-3"}`}>{i + 1}</span>

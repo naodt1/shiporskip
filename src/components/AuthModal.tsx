@@ -6,6 +6,7 @@ import { login, signup, type AuthResult } from "@/app/actions";
 import type { PublicUser } from "@/lib/auth";
 import type { AuthMode } from "./AppContext";
 import { GitHubMark } from "./icons";
+import { Logo } from "./Logo";
 
 type Field = "handle" | "email" | "pw";
 
@@ -79,12 +80,12 @@ export function AuthModal({
         >
           ×
         </button>
-        <div className="mb-3.5 font-mono text-sm font-bold text-green">shiporskip</div>
+        <Logo size="sm" className="mb-4" />
         <h2 id="auth-heading" className="m-0 mb-1 text-[22px] leading-tight font-bold">
           {signupMode ? "Create your account" : "Welcome back"}
         </h2>
         <p className="m-0 mb-5.5 text-sm text-muted-2">
-          {reason || (signupMode ? "Post projects and vote on what others should finish." : "Log in to vote and post.")}
+          {reason || (signupMode ? "Join the builders deciding what gets shipped." : "Log in to vote, post and ship.")}
         </p>
         <a
           href={`/api/auth/github?next=${encodeURIComponent(pathname || "/feed")}`}

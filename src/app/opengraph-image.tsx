@@ -5,6 +5,8 @@ export const size = OG_SIZE;
 export const contentType = "image/png";
 export const alt = "ShipOrSkip: let builders pick which side project you finish";
 
+const HEADLINE = "You can’t finish them all. Let builders pick the one you ship.";
+
 const DEMO: [string, number][] = [["tallyho", 45], ["quietcal", 36], ["plotline", 19]];
 
 export default async function Image() {
@@ -13,7 +15,12 @@ export default async function Image() {
       <div style={{ width: "100%", height: "100%", display: "flex", background: C.bg, padding: 64, gap: 56, color: C.ink, fontFamily: "Geist" }}>
         <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
           <Brand />
-          <div style={{ display: "flex", fontSize: 68, fontWeight: 700, lineHeight: 1.05, letterSpacing: -2, marginTop: 56 }}>You can’t finish them all. Let builders pick the one you ship.</div>
+          <div style={{ display: "flex", flexWrap: "wrap", columnGap: 17, fontSize: 68, fontWeight: 700, lineHeight: 1.05, letterSpacing: -2, marginTop: 56 }}>
+            {/* Satori has no inline spans: one flex item per word so "ship." can be green. */}
+            {HEADLINE.split(" ").map((w, i, all) => (
+              <span key={i} style={{ color: i === all.length - 1 ? C.green : C.ink }}>{w}</span>
+            ))}
+          </div>
           <div style={{ display: "flex", fontSize: 28, color: C.muted, marginTop: 24 }}>Post 2–5 half-built repos. Builders vote for 3 days. You ship the winner.</div>
         </div>
         <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", gap: 14, width: 420 }}>

@@ -61,13 +61,15 @@ export function CampaignView({ c, focusId }: { c: CampaignDetail; focusId?: stri
         ← Back
       </Link>
       <div className="flex flex-wrap items-baseline justify-between gap-3">
-        <span className="font-mono text-xs text-muted-2">@{c.handle} · {c.projects.length} projects{c.own ? " · yours" : ""}</span>
+        <span className="font-mono text-xs text-muted-2">
+          <span className="font-bold tracking-[.06em] text-green uppercase">Ship or skip?</span> · @{c.handle} · {c.projects.length} projects{c.own ? " · yours" : ""}
+        </span>
         <span className="font-mono text-xs text-muted-3">
           {total} votes · {closesLabel(c.closesAt)}
         </span>
       </div>
       <div className="mt-0.5 mb-4 flex items-start justify-between gap-3">
-        <h1 className="m-0 min-w-0 text-xl leading-snug font-bold break-words">{c.title}</h1>
+        <h1 className="m-0 min-w-0 text-2xl leading-tight font-bold tracking-[-.025em] break-words">{c.title}</h1>
         <ShareButton path={`/c/${c.id}`} title={c.title} />
       </div>
 
@@ -76,7 +78,7 @@ export function CampaignView({ c, focusId }: { c: CampaignDetail; focusId?: stri
           const v = counts[p.id];
           const isMine = mine === p.id;
           const fill = isMine ? "var(--color-green-tint)" : v === max ? "var(--color-fill-3)" : "var(--color-fill-2)";
-          const label = isMine ? "Your vote" : c.own || !c.open ? `${v} votes` : "Switch";
+          const label = isMine ? "Your pick" : c.own || !c.open ? `${v} votes` : "Switch";
           return (
             <div
               key={p.id}
@@ -120,7 +122,7 @@ export function CampaignView({ c, focusId }: { c: CampaignDetail; focusId?: stri
                       aria-label={`Vote for ${p.name}`}
                       className="w-full rounded-md border border-green bg-white p-2 text-sm font-semibold text-green hover:bg-green hover:text-white"
                     >
-                      Vote
+                      Ship this one
                     </button>
                   ) : (
                     <button
@@ -147,7 +149,7 @@ export function CampaignView({ c, focusId }: { c: CampaignDetail; focusId?: stri
             value={note}
             onChange={(e) => setNote(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && submitReason()}
-            placeholder={`Why ${mineName}?`}
+            placeholder={`Why should they ship ${mineName}?`}
             maxLength={280}
             className="min-w-0 flex-1 rounded-md border border-border bg-white px-2.5 py-2 text-sm"
           />
@@ -156,7 +158,7 @@ export function CampaignView({ c, focusId }: { c: CampaignDetail; focusId?: stri
           </button>
         </div>
       )}
-      {mine && sent && <div className="mt-3.5 text-[13px] text-green">Sent</div>}
+      {mine && sent && <div className="mt-3.5 text-[13px] font-semibold text-green">✓ Reason sent. The builder will see it.</div>}
     </>
   );
 }

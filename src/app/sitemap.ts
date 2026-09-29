@@ -20,6 +20,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/feed?sort=ending`, changeFrequency: "hourly", priority: 0.6 },
     { url: `${base}/leaderboards`, changeFrequency: "daily", priority: 0.7 },
     { url: `${base}/about`, changeFrequency: "monthly", priority: 0.4 },
+    { url: `${base}/brand`, changeFrequency: "yearly", priority: 0.2 },
     ...campaigns.flatMap((c) => {
       const open = c.status === "open" && c.closesAt > now;
       const entry = { lastModified: open ? now : c.closesAt, changeFrequency: open ? ("hourly" as const) : ("monthly" as const) };

@@ -7,6 +7,8 @@ import { closesLabel, pct } from "@/lib/format";
 import type { MyCampaign } from "@/lib/queries";
 import { useApp } from "./AppContext";
 import { ShareButton } from "./ShareButton";
+import { MAX_PROJECTS, MIN_PROJECTS } from "@/lib/config";
+import { PageHeader } from "./PageHeader";
 
 export function MyProjects({ campaigns, selectedId }: { campaigns: MyCampaign[]; selectedId?: string }) {
   const { openPost, toast } = useApp();
@@ -15,9 +17,10 @@ export function MyProjects({ campaigns, selectedId }: { campaigns: MyCampaign[];
   if (campaigns.length === 0)
     return (
       <div className="max-w-[680px]">
-        <h1 className="m-0 mb-3 text-xl font-bold">My projects</h1>
-        <p className="m-0 mb-3 text-muted-2">You haven&apos;t posted a campaign yet.</p>
-        <button onClick={openPost} className="rounded-md bg-ink px-3.5 py-2 text-[15px] font-semibold text-white hover:bg-ink-hover">
+        <PageHeader eyebrow="My projects" title="Nothing up for a vote yet">
+          Line up {MIN_PROJECTS}–{MAX_PROJECTS} half-built repos and let builders tell you which one to ship.
+        </PageHeader>
+        <button onClick={openPost} className="rounded-md bg-green px-3.5 py-2 text-[15px] font-semibold text-white hover:bg-green-hover">
           + Post projects
         </button>
       </div>
@@ -40,7 +43,7 @@ export function MyProjects({ campaigns, selectedId }: { campaigns: MyCampaign[];
 
   return (
     <div className="max-w-[680px]">
-      <h1 className="m-0 mb-3 text-xl font-bold">My projects</h1>
+      <PageHeader eyebrow="My projects" title="Your campaigns" />
       <div className="no-scrollbar -mx-4 mb-5 flex gap-2 overflow-x-auto px-4 sm:mx-0 sm:flex-wrap sm:px-0">
         {campaigns.map((c) => {
           const on = c.id === mb.id;
@@ -85,7 +88,7 @@ export function MyProjects({ campaigns, selectedId }: { campaigns: MyCampaign[];
           {!committed && !mb.shipped && mb.total > 0 && (
             <button
               disabled={busy}
-              onClick={() => run(() => commit(mb.id, leader.id), "Committed")}
+              onClick={() => run(() => commit(mb.id, leader.id), `Committed. Go ship ${leader.name}.`)}
               className="rounded-md bg-green px-4 py-[9px] text-[15px] font-semibold text-white hover:bg-green-hover"
             >
               Finish {leader.name}
@@ -94,7 +97,7 @@ export function MyProjects({ campaigns, selectedId }: { campaigns: MyCampaign[];
           {committed && !mb.shipped && (
             <>
               <span className="text-[15px]">✓ Finishing {committed.name}</span>
-              <button disabled={busy} onClick={() => run(() => markShipped(mb.id), "Shipped!")} className="p-0 text-sm text-green underline">
+              <button disabled={busy} onClick={() => run(() => markShipped(mb.id), "Shipped. That’s how it’s done.")} className="p-0 text-sm text-green underline">
                 Mark shipped
               </button>
             </>
@@ -110,7 +113,7 @@ export function MyProjects({ campaigns, selectedId }: { campaigns: MyCampaign[];
 
       {mb.reasons.length > 0 && (
         <>
-          <h3 className="mt-5 mb-2 text-[15px] font-bold">Reasons</h3>
+          <h3 className="mt-6 mb-2 text-[15px] font-bold">Why they voted</h3>
           <div className="flex flex-col gap-1.5">
             {mb.reasons.map((c, i) => (
               <div key={i} className="rounded-[7px] border border-border bg-white px-3 py-2">

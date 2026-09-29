@@ -8,6 +8,8 @@ import type { PublicUser } from "@/lib/auth";
 import { AppContext, type AppCtx, type AuthMode } from "./AppContext";
 import { AuthModal } from "./AuthModal";
 import { Avatar } from "./Avatar";
+import { Logo } from "./Logo";
+import { Eyebrow, SiteFooter } from "./SiteFooter";
 import { Flame, Grid, Info, Plus, Clock, Trophy } from "./icons";
 import { PostPanel } from "./PostPanel";
 
@@ -84,17 +86,18 @@ export function AppShell({ user, topBuilders, githubMock, children }: { user: Pu
 
   return (
     <AppContext.Provider value={ctx}>
-      <div className="min-h-screen">
+      <div className="flex min-h-screen flex-col">
         <header className="border-b border-border bg-white">
           <div className="mx-auto flex max-w-[1120px] flex-wrap items-center gap-x-5 gap-y-2 px-4 py-2.5 sm:px-5">
-            <Link href="/feed" className="font-mono text-base font-bold no-underline hover:text-ink">
-              shiporskip
+            <Link href="/" aria-label="ShipOrSkip home" className="no-underline">
+              <Logo size="sm" className="sm:hidden" />
+              <Logo className="max-sm:hidden" />
             </Link>
             <Suspense>
               <TopNav goMine={goMine} />
             </Suspense>
             <div className="ml-auto flex items-center gap-2 sm:gap-2.5">
-              <button onClick={openPost} className="rounded-md bg-ink px-3 py-2 text-[15px] font-semibold whitespace-nowrap text-white hover:bg-ink-hover sm:px-3.5">
+              <button onClick={openPost} className="rounded-md bg-green px-3 py-2 text-[15px] font-semibold whitespace-nowrap text-white hover:bg-green-hover sm:px-3.5">
                 + Post
               </button>
               {me ? (
@@ -118,13 +121,13 @@ export function AppShell({ user, topBuilders, githubMock, children }: { user: Pu
           </div>
         </header>
 
-        <div className="mx-auto flex max-w-[1120px] items-start gap-7 px-4 pt-4 pb-12 sm:px-5 sm:pt-5">
+        <div className="mx-auto flex w-full max-w-[1120px] flex-1 items-start gap-7 px-4 pt-4 pb-14 sm:px-5 sm:pt-6">
           <aside className="sticky top-5 hidden w-[180px] shrink-0 flex-col gap-7 min-[860px]:flex">
             <Suspense>
               <SideNav goMine={goMine} />
             </Suspense>
             <div className="px-2.5">
-              <div className="mb-2.5 text-[11px] tracking-[.06em] text-muted-3 uppercase">Top builders</div>
+              <Eyebrow className="mb-2.5">Top builders</Eyebrow>
               <Link href="/leaderboards" className="flex" aria-label="Leaderboards">
                 {topBuilders.map((b, k) => (
                   <Avatar key={b.id} handle={b.handle} url={b.avatarUrl} size={30} ring="#fafaf8" className={k ? "-ml-2" : ""} />
@@ -134,6 +137,7 @@ export function AppShell({ user, topBuilders, githubMock, children }: { user: Pu
           </aside>
           <main className="min-w-0 flex-1">{children}</main>
         </div>
+        <SiteFooter />
 
         {postOpen && (
           <PostPanel
@@ -142,7 +146,7 @@ export function AppShell({ user, topBuilders, githubMock, children }: { user: Pu
             onPosted={(id) => {
               setPostOpen(false);
               router.push(`/me?c=${id}`);
-              toast("Posted");
+              toast("Posted. Share it to get votes.");
             }}
           />
         )}

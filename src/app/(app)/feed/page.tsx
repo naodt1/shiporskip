@@ -2,12 +2,19 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Avatar } from "@/components/Avatar";
+import { PageHeader } from "@/components/PageHeader";
 import { ArrowUp, Grid } from "@/components/icons";
 import { BoostedPill, TimePill } from "@/components/TimePill";
 import { getUser } from "@/lib/auth";
 import { getFeed, type Sort } from "@/lib/queries";
 
 const LABELS: Record<Sort, string> = { hot: "Hot", new: "New", ending: "Ending soon" };
+
+const HEAD: Record<Sort, [string, string]> = {
+  hot: ["Hot right now", "Builders can’t decide. You can. Pick the project each of them should ship."],
+  new: ["Fresh campaigns", "Just posted. Be one of the first votes and set the tone."],
+  ending: ["Closing soon", "Last call. These votes close soon, then the builder commits."],
+};
 
 const DESC: Record<Sort, string> = {
   hot: "The side-project campaigns builders are voting on right now. Pick the one each maker should finish.",
@@ -31,10 +38,15 @@ export default async function FeedPage({ searchParams }: PageProps<"/feed">) {
 
   return (
     <>
-      <h1 className="m-0 mb-3.5 text-xl leading-tight font-bold">{LABELS[sort]}</h1>
-      <p className="sr-only">{DESC[sort]}</p>
+      <PageHeader eyebrow={`Feed · ${LABELS[sort]}`} title={HEAD[sort][0]}>{HEAD[sort][1]}</PageHeader>
       <div className="overflow-hidden rounded-[10px] border border-border bg-white">
-        {items.length === 0 && <p className="m-0 px-4 py-6 text-center text-sm text-muted-2">No open campaigns yet. Be the first to post.</p>}
+        {items.length === 0 && (
+          <div className="px-4 py-10 text-center">
+            <p className="m-0 mb-1 font-semibold">Nothing on the table yet.</p>
+            <p className="m-0 mb-4 text-sm text-muted-2">Got half-built repos? Put them up and let builders pick.</p>
+            <Link href="/feed?post=1" className="rounded-md bg-green px-4 py-2 text-[15px] font-semibold text-white no-underline hover:bg-green-hover hover:text-white">Post your projects</Link>
+          </div>
+        )}
         {items.map((b, i) => (
           <Link
             key={b.id}
@@ -52,7 +64,7 @@ export default async function FeedPage({ searchParams }: PageProps<"/feed">) {
               <span className="flex items-center gap-4 text-[13px] text-muted-2">
                 <span title="Votes" className="flex items-center gap-[5px]"><ArrowUp size={14} />{b.total}</span>
                 <span title="Projects" className="flex items-center gap-[5px]"><Grid size={14} />{b.count}</span>
-                {b.voted && <span className="flex items-center gap-1 font-semibold text-green">✓ voted</span>}
+                {b.voted && <span className="flex items-center gap-1 font-semibold text-green">✓ You picked</span>}
               </span>
             </span>
             <span className="flex items-center">

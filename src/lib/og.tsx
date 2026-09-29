@@ -61,7 +61,9 @@ export function Brand({ size = 30 }: { size?: number }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
       <Mark size={size + 14} />
-      <div style={{ fontSize: size, fontWeight: 700, color: C.ink, fontFamily: "Geist Mono" }}>shiporskip</div>
+      <div style={{ display: "flex", fontSize: size + 4, fontWeight: 700, color: C.ink, fontFamily: "Geist", letterSpacing: -(size + 4) * 0.035 }}>
+        Ship<span style={{ color: C.green }}>Or</span>Skip
+      </div>
     </div>
   );
 }

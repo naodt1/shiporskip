@@ -2,6 +2,8 @@ import Link from "next/link";
 import { Avatar } from "@/components/Avatar";
 import { ChevronUp, Clock, GitHubMark, Grid } from "@/components/icons";
 import { LandingDemo } from "@/components/LandingDemo";
+import { Logo, Mark } from "@/components/Logo";
+import { Eyebrow, SiteFooter } from "@/components/SiteFooter";
 import { getUser } from "@/lib/auth";
 import { BOOST_HOURS, BOOST_PRICE_CENTS, CAMPAIGN_DAYS, MAX_PROJECTS, MIN_COMMITS, MIN_PROJECTS, appUrl } from "@/lib/config";
 import { timeShort } from "@/lib/format";
@@ -22,26 +24,27 @@ export default async function Landing() {
   return (
     <div className="min-h-screen">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
-      <header className="sticky top-0 z-5 border-b border-border bg-white">
+      <header className="sticky top-0 z-5 border-b border-border bg-white/90 backdrop-blur">
         <div className="mx-auto flex max-w-[1120px] items-center gap-6 px-4 py-3 sm:px-5">
-          <Link href="/feed" className="font-mono text-base font-bold no-underline">shiporskip</Link>
+          <Link href="/" aria-label="ShipOrSkip home" className="no-underline"><Logo /></Link>
           <nav className="hidden gap-5 text-[15px] sm:flex">
             <a href="#how" className="text-muted no-underline">How it works</a>
             <a href="#today" className="text-muted no-underline">Voting now</a>
           </nav>
           <div className="ml-auto flex items-center gap-2 sm:gap-2.5">
             {!user && <Link href="/feed?login=1" className="px-2 py-[7px] text-[15px] whitespace-nowrap no-underline">Log in</Link>}
-            <Link href="/feed?post=1" className="rounded-md bg-ink px-3.5 py-2 text-[15px] font-semibold whitespace-nowrap text-white no-underline hover:text-white">Post projects</Link>
+            <Link href="/feed?post=1" className="rounded-md bg-green px-3.5 py-2 text-[15px] font-semibold whitespace-nowrap text-white no-underline hover:bg-green-hover hover:text-white">Post projects</Link>
           </div>
         </div>
       </header>
 
-      <section className="mx-auto grid max-w-[1120px] grid-cols-[repeat(auto-fit,minmax(min(100%,420px),1fr))] items-center gap-10 px-4 pt-10 pb-12 sm:gap-12 sm:px-5 sm:pt-18 sm:pb-14">
+      <div className="brand-grid border-b border-border">
+      <section className="mx-auto grid max-w-[1120px] grid-cols-[repeat(auto-fit,minmax(min(100%,420px),1fr))] items-center gap-10 px-4 pt-10 pb-12 sm:gap-12 sm:px-5 sm:pt-18 sm:pb-16">
         <div>
           <span className="mb-4.5 inline-flex items-center gap-1.5 rounded-full bg-green-tint-2 px-2.5 py-[3px] text-[13px] font-semibold text-green-text">
             For builders with a graveyard of side projects
           </span>
-          <h1 className="m-0 mb-4 text-[clamp(36px,5vw,54px)] leading-[1.05] font-bold tracking-[-.02em] text-balance">You can’t finish them all. Let builders pick the one you ship.</h1>
+          <h1 className="m-0 mb-4 text-[clamp(36px,5vw,56px)] leading-[1.02] font-bold tracking-[-.035em] text-balance">You can’t finish them all. Let builders pick the one you <span className="text-green">ship.</span></h1>
           <p className="m-0 mb-7 max-w-[460px] text-lg text-pretty text-muted">
             Line up {MIN_PROJECTS}–{MAX_PROJECTS} half-built repos. For {CAMPAIGN_DAYS} days, other indie hackers vote and tell you why. Then you commit to the winner and actually ship it.
           </p>
@@ -56,9 +59,11 @@ export default async function Landing() {
         </div>
         <LandingDemo />
       </section>
+      </div>
 
       <section id="how" className="mx-auto max-w-[1120px] px-4 pt-6 pb-12 sm:px-5 sm:pt-10 sm:pb-14">
-        <h2 className="m-0 mb-5 text-2xl font-bold">How it works</h2>
+        <Eyebrow tone="green" className="mb-2">How it works</Eyebrow>
+        <h2 className="m-0 mb-6 text-[28px] leading-tight font-bold tracking-[-.025em]">Three days from “which one?” to “this one.”</h2>
         <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,240px),1fr))] gap-3.5">
           {[
             ["01", "Line up your contenders", `Pick ${MIN_PROJECTS}–${MAX_PROJECTS} public repos you’ve started but not released. Add a screenshot and an early-access offer.`],
@@ -66,7 +71,7 @@ export default async function Landing() {
             ["03", "Commit and ship", "Publicly commit to the winner, then mark it shipped when it’s live. No more maybe-next-weekend."],
           ].map(([n, t, d]) => (
             <div key={n} className="rounded-[10px] border border-border bg-white p-5">
-              <div className="mb-2.5 font-mono text-[13px] font-bold text-green">{n}</div>
+              <div className="mb-3 grid h-8 w-8 place-items-center rounded-md bg-green-tint-2 font-mono text-[13px] font-bold text-green-text">{n}</div>
               <div className="mb-1 font-bold">{t}</div>
               <div className="text-[15px] text-muted-2">{d}</div>
             </div>
@@ -77,7 +82,7 @@ export default async function Landing() {
       <section id="today" className="mx-auto flex max-w-[1120px] flex-wrap items-start gap-7 px-4 pt-4 pb-12 sm:px-5 sm:pb-16">
         <div className="min-w-0 flex-[2_1_520px] max-sm:basis-full">
           <div className="mb-3.5 flex items-baseline justify-between">
-            <h2 className="m-0 text-xl font-bold sm:text-2xl">Voting now</h2>
+            <h2 className="m-0 text-xl font-bold tracking-[-.02em] sm:text-2xl">Voting now</h2>
             <Link href="/feed" className="text-sm font-semibold text-green no-underline">See all →</Link>
           </div>
           <div className="overflow-hidden rounded-[10px] border border-border bg-white">
@@ -108,7 +113,7 @@ export default async function Landing() {
 
         <aside className="flex flex-[1_1_280px] flex-col gap-3.5 max-sm:basis-full">
           <div className="rounded-[10px] border border-border bg-white p-4">
-            <div className="mb-2.5 text-[11px] tracking-[.06em] text-muted-3 uppercase">Shipped after the vote</div>
+            <Eyebrow className="mb-2.5">Shipped after the vote</Eyebrow>
             {shipped.length === 0 && <div className="text-sm text-muted-3">Nobody’s shipped yet. Could be you.</div>}
             {shipped.map((s, i) => (
               <div key={i} className={`flex justify-between gap-2.5 py-[7px] text-[15px] ${i ? "border-t border-divider" : ""}`}>
@@ -118,7 +123,7 @@ export default async function Landing() {
             ))}
           </div>
           <div className="rounded-[10px] border border-border bg-white p-4">
-            <div className="mb-2.5 text-[11px] tracking-[.06em] text-muted-3 uppercase">Rules</div>
+            <Eyebrow className="mb-2.5">House rules</Eyebrow>
             <div className="flex flex-col gap-2 text-[15px]">
               {["Public GitHub repos only", `Started: ${MIN_COMMITS}+ commits`, "Not finished: no release yet", `Free to post. $${BOOST_PRICE_CENTS / 100} to boost for ${BOOST_HOURS}h.`].map((r) => (
                 <span key={r} className="flex gap-2"><span className="font-bold text-green">✓</span>{r}</span>
@@ -129,21 +134,18 @@ export default async function Landing() {
       </section>
 
       <section className="mx-auto max-w-[1120px] px-4 pb-12 sm:px-5 sm:pb-18">
-        <div className="flex flex-wrap items-center justify-between gap-6 rounded-[14px] bg-ink px-6 py-8 text-white sm:px-8 sm:py-10">
-          <div>
-            <h2 className="m-0 mb-1.5 text-2xl leading-[1.15] font-bold sm:text-[28px]">Which one should you finish?</h2>
+        <div className="relative flex flex-wrap items-center justify-between gap-6 overflow-hidden rounded-[14px] bg-ink px-6 py-8 text-white sm:px-10 sm:py-12">
+          <Mark size={220} className="pointer-events-none absolute -right-10 -bottom-16 opacity-[.07] max-sm:hidden" />
+          <div className="relative">
+            <Eyebrow tone="bright" className="mb-2">Ship it or skip it</Eyebrow>
+            <h2 className="m-0 mb-1.5 text-2xl leading-[1.15] font-bold tracking-[-.025em] sm:text-[32px]">Which one should you finish?</h2>
             <p className="m-0 text-faint">Stop guessing. Get a straight answer in {CAMPAIGN_DAYS} days.</p>
           </div>
-          <Link href="/feed?post=1" className="rounded-lg bg-green px-5.5 py-3 text-base font-semibold text-white no-underline hover:bg-green-hover hover:text-white">Post your projects</Link>
+          <Link href="/feed?post=1" className="relative rounded-lg bg-green px-5.5 py-3 text-base font-semibold text-white no-underline hover:bg-green-hover hover:text-white">Post your projects</Link>
         </div>
       </section>
 
-      <footer className="border-t border-border">
-        <div className="mx-auto flex max-w-[1120px] flex-wrap justify-between gap-4 px-4 py-5 text-sm text-muted-3 sm:px-5">
-          <span className="font-mono">shiporskip</span>
-          <span>For people who start more than they finish.</span>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }

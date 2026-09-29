@@ -42,6 +42,13 @@ In production (`NODE_ENV=production`) the GitHub mock is disabled, and uploads r
 4. **Images:** set `BLOB_READ_WRITE_TOKEN` (Vercel Blob).
 5. Set `APP_URL` to the public origin (e.g. `https://shiporskip-liart.vercel.app`). If unset on Vercel, the production domain (`VERCEL_PROJECT_PRODUCTION_URL`) is used. It must match the OAuth app's redirect URI exactly.
 
+## Brand
+
+- Logo, colors, type and voice live on `/brand` (`src/app/(app)/brand/page.tsx`); downloadable files are in `public/brand/`.
+- In code: `Logo`, `Mark`, `Wordmark` (`src/components/Logo.tsx`), `SiteFooter` / `Eyebrow`, `PageHeader`. Share images use the same mark via `src/lib/og.tsx`.
+- Type is Geist + Geist Mono, self-hosted from `assets/fonts/` via `next/font/local`.
+- Primary actions are Ship Green (`bg-green`); ink is for text and dark surfaces.
+
 ## Where things live
 
 - `src/lib/config.ts` — rules: `MIN_COMMITS`, `ineligible()`, campaign length, boost price/duration.

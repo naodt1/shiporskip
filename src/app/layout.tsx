@@ -1,6 +1,10 @@
 import type { Metadata, Viewport } from "next";
+import localFont from "next/font/local";
 import { appUrl } from "@/lib/config";
 import "./globals.css";
+
+const geist = localFont({ src: "../../assets/fonts/Geist-Variable.woff2", weight: "100 900", variable: "--font-geist", display: "swap" });
+const geistMono = localFont({ src: "../../assets/fonts/GeistMono-Variable.woff2", weight: "100 900", variable: "--font-geist-mono", display: "swap" });
 
 const description = "Too many side projects? Post 2–5 unfinished repos from GitHub, let other builders vote on the one you should finish, and ship the winner.";
 
@@ -27,7 +31,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${geist.variable} ${geistMono.variable}`}>
       <body>{children}</body>
     </html>
   );
