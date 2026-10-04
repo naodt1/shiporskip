@@ -1,4 +1,4 @@
-const AVATAR_COLORS = ["#2f5d62", "#6b7f2a", "#b4532a", "#336021", "#8f4c12"];
+const AVATAR_COLORS = ["#54595d", "#72777d", "#3366cc", "#2a4b8d", "#404244"];
 
 export function avatarColor(handle: string) {
   let h = 0;

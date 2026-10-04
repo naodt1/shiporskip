@@ -20,36 +20,50 @@ export default async function LeaderboardsPage({ searchParams }: PageProps<"/lea
   const rows = await getBoard(tab.key);
 
   return (
-    <div className="max-w-[680px]">
-      <PageHeader eyebrow="Leaderboards" title="Who actually ships">Talk is cheap. These builders finished what voters picked, and these voters called it.</PageHeader>
-      <div className="mb-3 flex w-max max-w-full flex-wrap gap-1 rounded-lg bg-fill p-1">
+    <div className="max-w-[760px]">
+      <PageHeader title="Leaderboards">Talk is cheap. These builders finished what voters picked, and these voters called it.</PageHeader>
+      <div className="mb-3 flex gap-4 border-b border-border text-[14px]">
         {TABS.map((t) => {
           const on = t.key === tab.key;
           return (
             <Link
               key={t.key}
               href={t.key === "shipped" ? "/leaderboards" : `/leaderboards?tab=${t.key}`}
-              className={`rounded-md px-3.5 py-1.5 text-[15px] no-underline hover:text-ink ${on ? "bg-white font-semibold shadow-[0_1px_2px_rgba(0,0,0,.08)]" : ""}`}
+              className={`-mb-px border-b-2 px-1 pb-1.5 ${on ? "border-ink text-ink hover:text-ink" : "border-transparent"}`}
             >
               {t.label}
             </Link>
           );
         })}
       </div>
-      <p className="m-0 mb-3 text-sm text-muted-3">{tab.note}</p>
-      <div className="rounded-[10px] border border-border bg-white">
-        {rows.length === 0 && <p className="m-0 px-3.5 py-8 text-center text-sm text-muted-2">No one’s on the board yet. First to ship takes the top spot.</p>}
-        {rows.map((r, i) => (
-          <div key={i} className={`grid grid-cols-[36px_minmax(0,1fr)_auto] items-center gap-3 px-3.5 py-2 ${i ? "border-t border-divider" : ""}`}>
-            <span className={`font-mono text-sm font-bold ${i < 3 ? "text-green" : "text-muted-3"}`}>{i + 1}</span>
-            <span className="flex min-w-0 flex-wrap items-baseline gap-2">
-              <span className="font-semibold">{r.title}</span>
-              {r.sub && <span className="text-sm text-muted-3">{r.sub}</span>}
-            </span>
-            <span className="font-mono text-sm whitespace-nowrap">{r.stat}</span>
-          </div>
-        ))}
-      </div>
+      <p className="m-0 mb-3 text-[14px] text-muted-2">{tab.note}</p>
+      {rows.length === 0 ? (
+        <p className="wiki-box m-0 px-4 py-6 text-center text-[14px] text-muted-2">No one is on this board yet. The first to ship takes the top spot.</p>
+      ) : (
+        <table className="wikitable text-[14px]">
+          <thead>
+            <tr>
+              <th className="w-12 text-right">#</th>
+              <th>{tab.key === "voters" ? "Voter" : "Project"}</th>
+              {tab.key !== "voters" && <th className="max-sm:hidden">Builder</th>}
+              <th className="text-right">{tab.key === "shipped" ? "Time to ship" : tab.key === "projects" ? "Votes" : "Picks shipped"}</th>
+            </tr>
+          </thead>
+          <tbody className="bg-white">
+            {rows.map((r, i) => (
+              <tr key={i}>
+                <td className={`text-right ${i < 3 ? "font-bold" : "text-muted-2"}`}>{i + 1}</td>
+                <td>
+                  <span className={i < 3 ? "font-bold" : ""}>{r.title}</span>
+                  {r.sub && <span className="text-muted-2 sm:hidden"> {r.sub}</span>}
+                </td>
+                {tab.key !== "voters" && <td className="text-muted-2 max-sm:hidden">{r.sub}</td>}
+                <td className="text-right whitespace-nowrap">{r.stat}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
     </div>
   );
 }

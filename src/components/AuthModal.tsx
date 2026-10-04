@@ -12,7 +12,7 @@ import { motion } from "motion/react";
 type Field = "handle" | "email" | "pw";
 
 const inputCls = (bad: boolean) =>
-  `w-full rounded-lg border bg-white px-3 py-2.5 text-[15px] outline-none focus:border-green focus:shadow-[0_0_0_3px_var(--color-green-tint-2)] ${bad ? "border-urgent" : "border-outline"}`;
+  `w-full border bg-white px-2.5 py-2 text-[15px] outline-none focus:border-primary focus:shadow-[inset_0_0_0_1px_var(--color-primary)] ${bad ? "border-urgent" : "border-outline"}`;
 
 export function AuthModal({
   mode,
@@ -67,26 +67,26 @@ export function AuthModal({
 
   return (
     <>
-      <motion.div onClick={onClose} className="fixed inset-0 z-30 bg-[rgba(39,37,37,.4)] backdrop-blur-[2px]" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} />
+      <motion.div onClick={onClose} className="fixed inset-0 z-30 bg-[rgba(255,255,255,.65)]" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} />
       <motion.div
-        initial={{ opacity: 0, scale: 0.95, y: 12 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.97, y: 8 }}
-        transition={{ type: "spring", stiffness: 420, damping: 32 }}
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 4 }}
+        transition={{ duration: 0.18 }}
         role="dialog"
         aria-modal="true"
         aria-labelledby="auth-heading"
-        className="fixed top-1/2 left-1/2 z-31 max-h-[calc(100vh-32px)] w-[min(400px,calc(100%-32px))] -translate-x-1/2 -translate-y-1/2 overflow-auto rounded-2xl bg-white p-7 shadow-[0_24px_64px_rgba(0,0,0,.18)]"
+        className="fixed top-1/2 left-1/2 z-31 max-h-[calc(100vh-32px)] w-[min(400px,calc(100%-32px))] -translate-x-1/2 -translate-y-1/2 overflow-auto border border-border bg-white p-6 shadow-[0_2px_8px_rgba(0,0,0,.15)]"
       >
         <button
           onClick={onClose}
           aria-label="Close"
-          className="absolute top-3.5 right-3.5 h-8 w-8 rounded-full text-xl leading-none text-muted-3 hover:bg-fill hover:text-ink"
+          className="absolute top-3 right-3 h-8 w-8 text-xl leading-none text-muted-2 hover:bg-fill hover:text-ink"
         >
           ×
         </button>
         <Logo size="sm" className="mb-4" />
-        <h2 id="auth-heading" className="m-0 mb-1 text-[22px] leading-tight font-bold">
+        <h2 id="auth-heading" className="wiki-rule m-0 mb-2 text-[26px] leading-tight">
           {signupMode ? "Create your account" : "Welcome back"}
         </h2>
         <p className="m-0 mb-5.5 text-sm text-muted-2">
@@ -94,7 +94,7 @@ export function AuthModal({
         </p>
         <a
           href={`/api/auth/github?next=${encodeURIComponent(pathname || "/feed")}`}
-          className="flex w-full items-center justify-center gap-2.5 rounded-lg bg-ink p-3 text-[15px] font-semibold text-white no-underline hover:bg-ink-hover hover:text-white"
+          className="btn btn-normal btn-lg w-full"
         >
           <GitHubMark />
           Continue with GitHub
@@ -107,21 +107,21 @@ export function AuthModal({
         <form onSubmit={submit} noValidate className="flex flex-col gap-3.5">
           {signupMode && (
             <label className="flex flex-col gap-1.5">
-              <span className="text-sm font-semibold">Username</span>
+              <span className="text-sm font-bold">Username</span>
               <input value={f.handle} onChange={set("handle")} autoComplete="username" placeholder="e.g. mara" className={inputCls(err?.field === "handle")} />
               {errFor("handle")}
             </label>
           )}
           <label className="flex flex-col gap-1.5">
-            <span className="text-sm font-semibold">Email</span>
+            <span className="text-sm font-bold">Email</span>
             <input type="email" value={f.email} onChange={set("email")} autoComplete="email" placeholder="you@example.com" className={inputCls(err?.field === "email")} />
             {errFor("email")}
           </label>
           <div className="flex flex-col gap-1.5">
             <span className="flex items-baseline justify-between">
-              <label htmlFor="auth-pw" className="text-sm font-semibold">Password</label>
+              <label htmlFor="auth-pw" className="text-sm font-bold">Password</label>
               {!signupMode && (
-                <button type="button" onClick={onForgot} className="p-0 text-[13px] text-green">
+                <button type="button" onClick={onForgot} className="p-0 text-[13px] text-primary">
                   Forgot?
                 </button>
               )}
@@ -139,7 +139,7 @@ export function AuthModal({
               <button
                 type="button"
                 onClick={() => setShowPw(!showPw)}
-                className="absolute top-1/2 right-1.5 -translate-y-1/2 rounded-md px-2 py-1 text-[13px] text-muted-2 hover:bg-fill"
+                className="absolute top-1/2 right-1.5 -translate-y-1/2 px-2 py-1 text-[13px] text-primary hover:underline"
               >
                 {showPw ? "Hide" : "Show"}
               </button>
@@ -149,14 +149,14 @@ export function AuthModal({
           <button
             type="submit"
             disabled={busy}
-            className="mt-1 w-full rounded-lg bg-green p-3 text-[15px] font-semibold text-white hover:bg-green-hover disabled:opacity-60"
+            className="btn btn-primary btn-lg mt-1 w-full disabled:opacity-60"
           >
             {signupMode ? "Create account" : "Log in"}
           </button>
         </form>
         <p className="m-0 mt-4.5 text-center text-sm text-muted-2">
           {signupMode ? "Already have an account?" : "New to ShipOrSkip?"}{" "}
-          <button onClick={switchMode} className="p-0 text-sm font-semibold text-green">
+          <button onClick={switchMode} className="p-0 text-sm text-primary hover:underline">
             {signupMode ? "Log in" : "Create an account"}
           </button>
         </p>

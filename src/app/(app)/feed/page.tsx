@@ -4,7 +4,6 @@ import Link from "next/link";
 import { Avatar } from "@/components/Avatar";
 import { Stagger, StaggerItem } from "@/components/motion";
 import { PageHeader } from "@/components/PageHeader";
-import { ArrowUp, Grid } from "@/components/icons";
 import { BoostedPill, TimePill } from "@/components/TimePill";
 import { getUser } from "@/lib/auth";
 import { getFeed, type Sort } from "@/lib/queries";
@@ -40,55 +39,61 @@ export default async function FeedPage({ searchParams }: PageProps<"/feed">) {
 
   return (
     <>
-      <PageHeader eyebrow={`Feed · ${LABELS[sort]}`} title={HEAD[sort][0]}>{HEAD[sort][1]}</PageHeader>
-      <Stagger onMount className="overflow-hidden rounded-2xl border border-border bg-white">
-        {items.length === 0 && (
-          <div className="px-4 py-10 text-center">
-            <p className="m-0 mb-1 font-semibold">Nothing on the table yet.</p>
-            <p className="m-0 mb-4 text-sm text-muted-2">Got half-built repos? Put them up and let builders pick.</p>
-            <Link href="/feed?post=1" className="rounded-md bg-green px-4 py-2 text-[15px] font-semibold text-white no-underline hover:bg-green-hover hover:text-white">Post your projects</Link>
-          </div>
-        )}
-        {items.map((b, i) => (
-          <StaggerItem key={b.id}>
-          <Link
-            href={`/c/${b.id}`}
-            className={`group grid w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-3 bg-white px-3.5 py-4 text-left no-underline transition-colors hover:bg-green-tint-3 hover:text-ink sm:gap-4 sm:px-5 ${i ? "border-t border-divider" : ""}`}
-          >
-            <span className="flex min-w-0 flex-col gap-1.5">
-              <span className="flex flex-wrap items-center gap-2 text-[13px] text-muted-2">
-                <Avatar handle={b.handle} url={b.avatarUrl} />
-                <span>@{b.handle}</span>
-                <TimePill closesAt={b.closesAt} />
-                {b.boosted && <BoostedPill />}
-              </span>
-              <span className="text-[17px] leading-snug font-semibold tracking-[-.01em] transition-colors group-hover:text-green-text">{b.title}</span>
-              <span className="flex items-center gap-4 text-[13px] text-muted-2">
-                <span title="Votes" className="flex items-center gap-[5px]"><ArrowUp size={14} />{b.total}</span>
-                <span title="Projects" className="flex items-center gap-[5px]"><Grid size={14} />{b.count}</span>
-                {b.voted && <span className="flex items-center gap-1 font-semibold text-green">✓ You picked</span>}
-              </span>
-            </span>
-            <span className="flex items-center transition-transform duration-300 group-hover:-translate-x-1">
-              {b.thumbs.slice(0, 3).map((t, k) =>
-                t.imageUrl ? (
-                  <img key={k} src={t.imageUrl} alt="" className={`h-10 w-10 rounded-xl border-2 border-white object-cover shadow-sm sm:h-[52px] sm:w-[52px] ${k ? "-ml-3 sm:-ml-3.5" : ""}`} />
-                ) : (
-                  <span key={k} style={{ backgroundImage: tileGradient(t.name) }} className={`grid h-10 w-10 place-items-center rounded-xl border-2 border-white text-sm font-bold text-white shadow-sm sm:h-[52px] sm:w-[52px] sm:text-base ${k ? "-ml-3 sm:-ml-3.5" : ""}`}>
-                    {t.name[0]?.toUpperCase()}
-                  </span>
-                ),
-              )}
-              {b.thumbs.length > 3 && (
-                <span className="-ml-3 grid h-10 w-10 place-items-center sm:-ml-3.5 sm:h-[52px] sm:w-[52px] rounded-lg border-2 border-white bg-border text-[13px] font-semibold text-muted">
-                  +{b.thumbs.length - 3}
-                </span>
-              )}
-            </span>
-          </Link>
-          </StaggerItem>
-        ))}
-      </Stagger>
+      <PageHeader title={HEAD[sort][0]}>{HEAD[sort][1]}</PageHeader>
+      {items.length === 0 ? (
+        <div className="wiki-box px-4 py-6 text-center">
+          <p className="m-0 mb-1 font-bold">There are no open campaigns right now.</p>
+          <p className="m-0 mb-4 text-[14px] text-muted-2">Got half-built repos? Put them up and let builders pick.</p>
+          <Link href="/feed?post=1" className="btn btn-primary">Post your projects</Link>
+        </div>
+      ) : (
+        <>
+          <p className="m-0 mb-2 text-[13px] text-muted-2">
+            Showing {items.length} open campaign{items.length === 1 ? "" : "s"}.
+          </p>
+          <Stagger onMount className="flex flex-col">
+            {items.map((b) => (
+              <StaggerItem key={b.id} className="flex items-start gap-4 border-b border-divider py-3.5">
+                <div className="min-w-0 flex-1">
+                  <Link href={`/c/${b.id}`} className="text-[18px] leading-snug">
+                    {b.title}
+                  </Link>
+                  <div className="mt-0.5 text-[14px] text-ink">
+                    {b.thumbs.map((t) => t.name).join(" · ")}
+                  </div>
+                  <div className="mt-0.5 flex flex-wrap items-center gap-x-1.5 text-[13px] text-muted-2">
+                    <Avatar handle={b.handle} url={b.avatarUrl} size={14} />
+                    <span>@{b.handle}</span>
+                    <span>· {b.total} votes</span>
+                    <span>· {b.count} projects</span>
+                    <span>·</span>
+                    <TimePill closesAt={b.closesAt} />
+                    {b.boosted && (
+                      <>
+                        <span>·</span>
+                        <BoostedPill />
+                      </>
+                    )}
+                    {b.voted && <span className="font-bold text-ink">· you voted</span>}
+                  </div>
+                </div>
+                <Link href={`/c/${b.id}`} aria-hidden tabIndex={-1} className="shrink-0">
+                  {b.thumbs[0]?.imageUrl ? (
+                    <img src={b.thumbs[0].imageUrl} alt="" className="h-[60px] w-[80px] border border-divider object-cover" />
+                  ) : (
+                    <span
+                      style={{ backgroundImage: tileGradient(b.thumbs[0]?.name ?? "?") }}
+                      className="grid h-[60px] w-[80px] place-items-center border border-divider font-serif text-[26px] text-muted-2"
+                    >
+                      {b.thumbs[0]?.name[0]?.toUpperCase()}
+                    </span>
+                  )}
+                </Link>
+              </StaggerItem>
+            ))}
+          </Stagger>
+        </>
+      )}
     </>
   );
 }

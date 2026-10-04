@@ -10,8 +10,7 @@ import { AppContext, type AppCtx, type AuthMode } from "./AppContext";
 import { AuthModal } from "./AuthModal";
 import { Avatar } from "./Avatar";
 import { Logo } from "./Logo";
-import { Eyebrow, SiteFooter } from "./SiteFooter";
-import { Flame, Grid, Info, Plus, Clock, Trophy } from "./icons";
+import { SiteFooter } from "./SiteFooter";
 import { PostPanel } from "./PostPanel";
 
 type Builder = { id: string; handle: string; avatarUrl: string | null };
@@ -89,52 +88,57 @@ export function AppShell({ user, topBuilders, githubMock, children }: { user: Pu
     <AppContext.Provider value={ctx}>
       <div className="flex min-h-screen flex-col">
         <header className="border-b border-border bg-white">
-          <div className="mx-auto flex max-w-[1120px] flex-wrap items-center gap-x-5 gap-y-2 px-4 py-2.5 sm:px-5">
-            <Link href="/" aria-label="ShipOrSkip home" className="no-underline">
+          <div className="mx-auto flex max-w-[1120px] flex-wrap items-center gap-x-5 gap-y-2 px-4 py-3 sm:px-5">
+            <Link href="/" aria-label="ShipOrSkip home" className="text-ink no-underline hover:no-underline">
               <Logo size="sm" className="sm:hidden" />
-              <Logo className="max-sm:hidden" />
+              <Logo tagline className="max-sm:hidden" />
             </Link>
             <Suspense>
               <TopNav goMine={goMine} />
             </Suspense>
-            <div className="ml-auto flex items-center gap-2 sm:gap-2.5">
-              <button onClick={openPost} className="press cta-glow rounded-lg bg-green px-3 py-2 text-[15px] font-semibold whitespace-nowrap text-white hover:bg-green-hover sm:px-3.5">
-                + Post
-              </button>
+            <div className="ml-auto flex items-center gap-3 text-[14px] sm:gap-4">
               {me ? (
                 <>
-                  <span className="hidden max-w-[120px] truncate text-sm text-muted sm:inline">@{me.handle}</span>
-                  <button onClick={doLogout} className="p-0 text-sm whitespace-nowrap text-muted-2 underline">
+                  <span className="hidden max-w-[140px] truncate text-muted-2 sm:inline">@{me.handle}</span>
+                  <button onClick={doLogout} className="p-0 whitespace-nowrap text-primary hover:underline">
                     Log out
                   </button>
                 </>
               ) : (
                 <>
-                  <button onClick={() => openAuth("login")} className="rounded-md px-2 py-[7px] text-[15px] whitespace-nowrap hover:bg-fill sm:px-2.5">
-                    Log in
+                  <button onClick={() => openAuth("signup")} className="p-0 whitespace-nowrap text-primary hover:underline">
+                    Create account
                   </button>
-                  <button onClick={() => openAuth("signup")} className="rounded-md border border-outline bg-white px-3 py-[7px] text-[15px] font-semibold whitespace-nowrap hover:border-ink">
-                    Sign up
+                  <button onClick={() => openAuth("login")} className="p-0 whitespace-nowrap text-primary hover:underline">
+                    Log in
                   </button>
                 </>
               )}
+              <button onClick={openPost} className="btn btn-primary text-[14px]">
+                + Post projects
+              </button>
             </div>
           </div>
         </header>
 
-        <div className="mx-auto flex w-full max-w-[1120px] flex-1 items-start gap-7 px-4 pt-4 pb-14 sm:px-5 sm:pt-6">
-          <aside className="sticky top-5 hidden w-[180px] shrink-0 flex-col gap-7 min-[860px]:flex">
+        <div className="mx-auto flex w-full max-w-[1120px] flex-1 items-start gap-8 px-4 pt-5 pb-14 sm:px-5">
+          <aside className="sticky top-5 hidden w-[176px] shrink-0 flex-col gap-6 text-[14px] min-[860px]:flex">
             <Suspense>
               <SideNav goMine={goMine} />
             </Suspense>
-            <div className="px-2.5">
-              <Eyebrow className="mb-2.5">Top builders</Eyebrow>
-              <Link href="/leaderboards" className="flex" aria-label="Leaderboards">
-                {topBuilders.map((b, k) => (
-                  <Avatar key={b.id} handle={b.handle} url={b.avatarUrl} size={30} ring="#f4f2ef" className={k ? "-ml-2" : ""} />
-                ))}
-              </Link>
-            </div>
+            {topBuilders.length > 0 && (
+              <div>
+                <div className="mb-1.5 border-b border-divider pb-1 text-[13px] text-muted-3">Top builders</div>
+                <ul className="m-0 flex list-none flex-col gap-1 p-0">
+                  {topBuilders.map((b) => (
+                    <li key={b.id} className="flex items-center gap-2">
+                      <Avatar handle={b.handle} url={b.avatarUrl} size={18} />
+                      <Link href="/leaderboards">@{b.handle}</Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </aside>
           <main className="min-w-0 flex-1">{children}</main>
         </div>
@@ -175,7 +179,7 @@ export function AppShell({ user, topBuilders, githubMock, children }: { user: Pu
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 8, scale: 0.98 }}
             transition={{ type: "spring", stiffness: 500, damping: 34 }}
-            className="fixed bottom-[max(24px,env(safe-area-inset-bottom))] left-1/2 z-40 w-max max-w-[calc(100%-32px)] -translate-x-1/2 rounded-xl bg-ink px-4 py-2.5 text-center text-[15px] text-white shadow-[0_12px_32px_-8px_rgba(0,0,0,.35)]"
+            className="fixed bottom-[max(24px,env(safe-area-inset-bottom))] left-1/2 z-40 w-max max-w-[calc(100%-32px)] -translate-x-1/2 border border-border border-l-4 border-l-primary bg-white px-4 py-2.5 text-[15px] text-ink shadow-[0_2px_8px_rgba(0,0,0,.15)]"
           >
             {toastText}
           </motion.div>
@@ -201,44 +205,42 @@ function useActive() {
 
 function SideNav({ goMine }: { goMine: () => void }) {
   const active = useActive();
-  const item = (on: boolean) =>
-    `relative flex items-center gap-2.5 rounded-lg px-2.5 py-[7px] text-left text-[15px] no-underline transition-colors ${on ? "font-semibold text-green-text hover:text-green-text" : "text-ink hover:bg-fill hover:text-ink"}`;
-  // The highlight is one shared element that slides to whichever item is active.
-  const pill = (on: boolean) =>
-    on && <motion.span layoutId="side-pill" className="absolute inset-0 -z-1 rounded-lg bg-green-tint-2" transition={{ type: "spring", stiffness: 500, damping: 38 }} />;
-  const links: [string, string, React.ReactNode, string][] = [
-    ["hot", "/feed", <Flame key="i" />, "Hot"],
-    ["new", "/feed?sort=new", <Plus key="i" />, "New"],
-    ["ending", "/feed?sort=ending", <Clock key="i" />, "Ending soon"],
-  ];
+  const item = (on: boolean) => (on ? "font-bold text-ink hover:text-ink" : "");
+  const head = "mb-1.5 border-b border-divider pb-1 text-[13px] text-muted-3";
   return (
-    <nav className="isolate flex flex-col gap-0.5">
-      {links.map(([k, href, icon, label]) => (
-        <Link key={k} href={href} className={item(active(k))}>
-          {pill(active(k))}
-          {icon}
-          {label}
-        </Link>
-      ))}
-      <span className="mx-2.5 my-2 h-px bg-border" />
-      <Link href="/leaderboards" className={item(active("leaderboards"))}>{pill(active("leaderboards"))}<Trophy />Leaderboards</Link>
-      <button onClick={goMine} className={item(active("me"))}>{pill(active("me"))}<Grid />My projects</button>
-      <Link href="/about" className={item(active("about"))}>{pill(active("about"))}<Info />About</Link>
+    <nav className="flex flex-col gap-6">
+      <div>
+        <div className={head}>Main menu</div>
+        <ul className="m-0 flex list-none flex-col gap-1 p-0">
+          <li><Link href="/">Main page</Link></li>
+          <li><Link href="/feed" className={item(active("hot"))}>Hot campaigns</Link></li>
+          <li><Link href="/feed?sort=new" className={item(active("new"))}>New campaigns</Link></li>
+          <li><Link href="/feed?sort=ending" className={item(active("ending"))}>Ending soon</Link></li>
+        </ul>
+      </div>
+      <div>
+        <div className={head}>Community</div>
+        <ul className="m-0 flex list-none flex-col gap-1 p-0">
+          <li><Link href="/leaderboards" className={item(active("leaderboards"))}>Leaderboards</Link></li>
+          <li><button onClick={goMine} className={`p-0 text-left text-primary hover:underline ${item(active("me"))}`}>My projects</button></li>
+          <li><Link href="/about" className={item(active("about"))}>About</Link></li>
+          <li><Link href="/brand" className={item(active("brand"))}>Brand kit</Link></li>
+        </ul>
+      </div>
     </nav>
   );
 }
 
 function TopNav({ goMine }: { goMine: () => void }) {
   const active = useActive();
-  const pill = (on: boolean) => `relative shrink-0 rounded-lg px-3 py-1.5 text-[15px] no-underline hover:text-ink ${on ? "font-semibold text-green-text hover:text-green-text" : ""}`;
-  const bg = (on: boolean) =>
-    on && <motion.span layoutId="top-pill" className="absolute inset-0 -z-1 rounded-lg bg-green-tint-2" transition={{ type: "spring", stiffness: 500, damping: 38 }} />;
+  // Encyclopedia-style tabs: the active one is black with a dark underline.
+  const tab = (on: boolean) => `shrink-0 border-b-2 px-1 pb-1.5 text-[14px] ${on ? "border-ink text-ink hover:text-ink" : "border-transparent"}`;
   return (
-    <nav className="no-scrollbar isolate order-last -mx-4 flex w-[calc(100%+32px)] gap-1 overflow-x-auto px-4 whitespace-nowrap sm:-mx-5 sm:w-[calc(100%+40px)] sm:px-5 min-[860px]:hidden">
-      <Link href="/feed" className={pill(active("feed"))}>{bg(active("feed"))}Vote</Link>
-      <Link href="/leaderboards" className={pill(active("leaderboards"))}>{bg(active("leaderboards"))}Leaderboards</Link>
-      <button onClick={goMine} className={pill(active("me"))}>{bg(active("me"))}My projects</button>
-      <Link href="/about" className={pill(active("about"))}>{bg(active("about"))}About</Link>
+    <nav className="no-scrollbar order-last -mx-4 flex w-[calc(100%+32px)] gap-4 overflow-x-auto border-t border-divider px-4 pt-2 whitespace-nowrap sm:-mx-5 sm:w-[calc(100%+40px)] sm:px-5 min-[860px]:hidden">
+      <Link href="/feed" className={tab(active("feed"))}>Vote</Link>
+      <Link href="/leaderboards" className={tab(active("leaderboards"))}>Leaderboards</Link>
+      <button onClick={goMine} className={`text-primary ${tab(active("me"))}`}>My projects</button>
+      <Link href="/about" className={tab(active("about"))}>About</Link>
     </nav>
   );
 }

@@ -4,8 +4,16 @@ import { MotionProvider } from "@/components/motion";
 import { appUrl } from "@/lib/config";
 import "./globals.css";
 
-const geist = localFont({ src: "../../assets/fonts/Geist-Variable.woff2", weight: "100 900", variable: "--font-geist", display: "swap" });
-const geistMono = localFont({ src: "../../assets/fonts/GeistMono-Variable.woff2", weight: "100 900", variable: "--font-geist-mono", display: "swap" });
+// Libertinus Serif (OFL), the open successor of Linux Libertine, for headings.
+const libertinus = localFont({
+  src: [
+    { path: "../../assets/fonts/LibertinusSerif-Regular.woff2", weight: "400", style: "normal" },
+    { path: "../../assets/fonts/LibertinusSerif-Italic.woff2", weight: "400", style: "italic" },
+    { path: "../../assets/fonts/LibertinusSerif-Bold.woff2", weight: "700", style: "normal" },
+  ],
+  variable: "--font-libertinus",
+  display: "swap",
+});
 
 const description = "Builders vote. You ship. Post 2–5 unfinished side projects from GitHub, get votes and reasons in 3 days, and finish the one people actually want.";
 
@@ -27,12 +35,12 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#f4f2ef",
+  themeColor: "#ffffff",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${geist.variable} ${geistMono.variable}`}>
+    <html lang="en" className={libertinus.variable}>
       <body>
         <MotionProvider>{children}</MotionProvider>
       </body>

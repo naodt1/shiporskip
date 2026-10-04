@@ -91,26 +91,26 @@ export function PostPanel({ githubMock, onClose, onPosted }: { githubMock: boole
 
   return (
     <>
-      <motion.div onClick={onClose} className="fixed inset-0 z-30 bg-[rgba(39,37,37,.28)] backdrop-blur-[2px]" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} />
-      <motion.div initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} transition={{ type: "spring", stiffness: 380, damping: 38 }} role="dialog" aria-modal="true" aria-labelledby="post-heading" className="fixed top-0 right-0 bottom-0 z-31 w-[min(480px,100%)] overflow-auto overscroll-contain bg-white p-5 pb-[max(20px,env(safe-area-inset-bottom))] sm:p-6 shadow-[-12px_0_32px_rgba(0,0,0,.1)]">
+      <motion.div onClick={onClose} className="fixed inset-0 z-30 bg-[rgba(255,255,255,.6)]" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} />
+      <motion.div initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} transition={{ type: "tween", duration: 0.22, ease: "easeOut" }} role="dialog" aria-modal="true" aria-labelledby="post-heading" className="fixed top-0 right-0 bottom-0 z-31 w-[min(480px,100%)] overflow-auto overscroll-contain border-l border-border bg-white p-5 pb-[max(20px,env(safe-area-inset-bottom))] sm:p-6">
         <button onClick={onClose} aria-label="Close" className="absolute top-4 right-4 p-1 text-[22px] leading-none text-muted-2 hover:text-ink">
           ×
         </button>
-        <h1 id="post-heading" className="m-0 mb-1 text-xl font-bold">
+        <h1 id="post-heading" className="wiki-rule m-0 mb-2 text-[26px]">
           Post 2–5 projects
         </h1>
         <p className="m-0 mb-3.5 text-sm text-muted-2">From GitHub only. In progress: not finished, not just an idea.</p>
 
         {!connected && (
-          <button onClick={connect} className="rounded-md bg-ink px-4 py-2.5 text-[15px] font-semibold text-white hover:bg-ink-hover">
+          <button onClick={connect} className="btn btn-normal btn-lg">
             Connect GitHub
           </button>
         )}
 
         {connected && (
           <>
-            <div className="mb-2.5 font-semibold">Your repos</div>
-            <div className="mb-4 rounded-[10px] border border-border bg-white">
+            <div className="mb-1.5 font-bold">Your repos</div>
+            <div className="mb-4 rounded-sm border border-border bg-white">
               {!repos && !loadErr && <div className="px-3.5 py-3 text-sm text-muted-3">Loading repos…</div>}
               {loadErr && <div className="px-3.5 py-3 text-sm text-urgent">{loadErr}</div>}
               {repos?.length === 0 && <div className="px-3.5 py-3 text-sm text-muted-3">No public repos found.</div>}
@@ -121,20 +121,20 @@ export function PostPanel({ githubMock, onClose, onPosted }: { githubMock: boole
                   <label
                     key={r.fullName}
                     style={{ opacity: r.reason ? 0.55 : 1 }}
-                    className={`flex items-start gap-3 px-3.5 py-2 ${i ? "border-t border-divider" : ""} ${r.reason ? "cursor-not-allowed" : "cursor-pointer"} ${on ? "bg-green-tint-3" : ""}`}
+                    className={`flex items-start gap-3 px-3.5 py-2 ${i ? "border-t border-divider" : ""} ${r.reason ? "cursor-not-allowed" : "cursor-pointer"} ${on ? "bg-primary-tint-3" : ""}`}
                   >
                     <input
                       type="checkbox"
                       checked={on}
                       disabled={disabled}
                       onChange={() => setPicked((p) => (on ? p.filter((n) => n !== r.fullName) : [...p, r.fullName]))}
-                      className="mt-1 h-4 w-4 accent-green"
+                      className="mt-1 h-4 w-4 accent-primary"
                     />
                     <span className="flex min-w-0 flex-1 flex-col">
-                      <span className="font-semibold">{r.name}</span>
+                      <span className="text-primary">{r.name}</span>
                       <span className="text-sm text-muted">{r.desc}</span>
                     </span>
-                    <span className={`text-right font-mono text-xs whitespace-nowrap ${r.reason ? "text-urgent" : "text-muted-3"}`}>
+                    <span className={`text-right text-xs whitespace-nowrap ${r.reason ? "text-urgent" : "text-muted-3"}`}>
                       {r.reason || `${r.commits} commits · ${agoShort(r.pushedAt)} ago`}
                     </span>
                   </label>
@@ -146,34 +146,34 @@ export function PostPanel({ githubMock, onClose, onPosted }: { githubMock: boole
 
         {picked.length > 0 && (
           <div className="mt-4.5">
-            <div className="mb-2 font-semibold">
+            <div className="mb-1.5 font-bold">
               Image &amp; offer <span className="text-sm font-normal text-muted-3">optional</span>
             </div>
-            <div className="rounded-[10px] border border-border bg-white">
+            <div className="rounded-sm border border-border bg-white">
               {picked.map((k, i) => {
                 const e = extras[k] ?? {};
                 return (
                   <div key={k} className={`grid grid-cols-[56px_minmax(0,1fr)] items-start gap-3 px-3.5 py-2.5 ${i ? "border-t border-divider" : ""}`}>
-                    <label className="grid h-14 w-14 cursor-pointer place-items-center overflow-hidden rounded-lg border border-dashed border-dash bg-bg text-center text-[11px] leading-tight text-muted-3">
+                    <label className="grid h-14 w-14 cursor-pointer place-items-center overflow-hidden border border-dashed border-dash bg-fill-2 text-center text-[11px] leading-tight text-muted-3">
                       <input type="file" accept="image/png,image/jpeg,image/webp,image/gif" onChange={(ev) => onImg(k, ev.target.files?.[0])} className="hidden" />
                       {e.preview ? <img src={e.preview} alt="" className={`h-14 w-14 object-cover ${e.uploading ? "opacity-50" : ""}`} /> : <span>+ image</span>}
                     </label>
                     <div className="flex min-w-0 flex-col gap-1.5">
-                      <span className="font-semibold">{byName.get(k)?.name ?? k}</span>
+                      <span className="font-bold">{byName.get(k)?.name ?? k}</span>
                       <div className="grid grid-cols-1 gap-1.5 min-[400px]:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
                         <input
                           value={e.offer ?? ""}
                           onChange={(ev) => setExt(k, { offer: ev.target.value })}
                           placeholder="Offer, e.g. 30% off"
                           maxLength={60}
-                          className="min-w-0 rounded-md border border-border bg-bg px-2.5 py-1.5 text-sm"
+                          className="min-w-0 border border-border bg-white px-2.5 py-1.5 text-sm"
                         />
                         <input
                           value={e.code ?? ""}
                           onChange={(ev) => setExt(k, { code: ev.target.value.toUpperCase() })}
                           placeholder="Promo code"
                           maxLength={32}
-                          className="min-w-0 rounded-md border border-border bg-bg px-2.5 py-1.5 font-mono text-sm uppercase placeholder:normal-case"
+                          className="min-w-0 border border-border bg-white px-2.5 py-1.5 text-sm uppercase placeholder:normal-case"
                         />
                       </div>
                     </div>
@@ -186,9 +186,9 @@ export function PostPanel({ githubMock, onClose, onPosted }: { githubMock: boole
 
         {connected && (
           <div className="mt-4 flex flex-col gap-2.5">
-            <input value={title} onChange={(e) => setTitle(e.target.value)} maxLength={120} placeholder="Title (optional)" className="rounded-md border border-border bg-white px-3 py-2.5" />
+            <input value={title} onChange={(e) => setTitle(e.target.value)} maxLength={120} placeholder="Title (optional)" className="border border-border bg-white px-2.5 py-2" />
             <label className="flex cursor-pointer items-start gap-2.5 text-[15px]">
-              <input type="checkbox" checked={boost} onChange={() => setBoost(!boost)} className="mt-[3px] h-4 w-4 accent-green" />
+              <input type="checkbox" checked={boost} onChange={() => setBoost(!boost)} className="mt-[3px] h-4 w-4 accent-primary" />
               <span>
                 Boost for $9 <span className="text-muted-3">· pinned 48h</span>
               </span>
@@ -198,7 +198,7 @@ export function PostPanel({ githubMock, onClose, onPosted }: { githubMock: boole
                 onClick={submit}
                 disabled={cant}
                 style={{ opacity: picked.length < MIN_PROJECTS ? 0.4 : 1 }}
-                className="rounded-md bg-green px-4.5 py-2.5 text-[15px] font-semibold text-white hover:bg-green-hover"
+                className="btn btn-primary btn-lg"
               >
                 {busy ? "Posting…" : `Post${boost ? " · $9" : ""}`}
               </button>

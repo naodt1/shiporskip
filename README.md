@@ -44,10 +44,11 @@ In production (`NODE_ENV=production`) the GitHub mock is disabled, and uploads r
 
 ## Brand
 
+- The look is encyclopedia-style: white pages, blue links, hairline grey borders, square corners, serif headings. Colors follow the Wikimedia Codex tokens (`src/app/globals.css`).
 - Logo, colors, type and voice live on `/brand` (`src/app/(app)/brand/page.tsx`); downloadable files are in `public/brand/`.
-- In code: `Logo`, `Mark`, `Wordmark` (`src/components/Logo.tsx`), `SiteFooter` / `Eyebrow`, `PageHeader`. Share images use the same mark via `src/lib/og.tsx`.
-- Type is Geist + Geist Mono, self-hosted from `assets/fonts/` via `next/font/local`.
-- Primary actions are Ship Green (`bg-green`); ink is for text and dark surfaces.
+- In code: `Logo` / `Mark` (`src/components/Logo.tsx`), `PageHeader`, `SiteFooter`, and the `.btn`, `.wiki-box` and `.wikitable` classes. Share images use the same look via `src/lib/og.tsx`.
+- Type: Libertinus Serif for headings (self-hosted from `assets/fonts/`, OFL), the system sans-serif for body text.
+- Tagline: "Builders vote. You ship."
 
 ## Where things live
 

@@ -37,16 +37,17 @@ export function ShareButton({ path, title, compact, label }: { path: string; tit
         onClick={share}
         aria-label={label ?? "Share"}
         title={copied ? "Copied" : (label ?? "Share")}
-        className={`grid h-8 w-8 shrink-0 place-items-center rounded-md border bg-white hover:border-green hover:text-green ${copied ? "border-green text-green" : "border-outline text-muted-2"}`}
+        className="flex items-center gap-1 p-0 text-[13px] text-primary hover:underline"
       >
-        <LinkIcon size={14} />
+        <LinkIcon size={13} />
+        {copied ? "Link copied" : "Share link"}
       </button>
     );
 
   return (
     <button
       onClick={share}
-      className="flex shrink-0 items-center gap-1.5 rounded-md border border-outline bg-white px-3 py-1.5 text-sm font-semibold hover:border-green hover:text-green"
+      className="btn btn-normal text-[14px]"
     >
       <LinkIcon size={14} />
       {copied ? "Copied" : "Share"}

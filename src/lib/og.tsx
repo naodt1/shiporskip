@@ -1,7 +1,7 @@
 import "server-only";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
-import { tileColors } from "./tiles";
+import { TILE_TEXT, tileColors } from "./tiles";
 import { isOurImageUrl } from "./upload";
 
 export const OG_SIZE = { width: 1200, height: 630 };
@@ -9,13 +9,15 @@ export const OG_SIZE = { width: 1200, height: 630 };
 type Font = { name: string; data: Buffer; weight: 400 | 700; style: "normal" };
 let fonts: Promise<Font[]> | null = null;
 
-/** Geist (OFL) — the default OG font has no bold weight. */
+/** Libertinus Serif for headings, Geist for body text (both OFL). */
 export function ogFonts() {
   const dir = path.join(process.cwd(), "assets", "fonts");
+  const load = (file: string, name: string, weight: 400 | 700): Promise<Font> => readFile(path.join(dir, file)).then((data) => ({ name, data, weight, style: "normal" }));
   fonts ??= Promise.all([
-    readFile(path.join(dir, "Geist-Regular.ttf")).then((data): Font => ({ name: "Geist", data, weight: 400, style: "normal" })),
-    readFile(path.join(dir, "Geist-Bold.ttf")).then((data): Font => ({ name: "Geist", data, weight: 700, style: "normal" })),
-    readFile(path.join(dir, "GeistMono-Bold.ttf")).then((data): Font => ({ name: "Geist Mono", data, weight: 700, style: "normal" })),
+    load("LibertinusSerif-Regular.woff", "Libertinus", 400),
+    load("LibertinusSerif-Bold.woff", "Libertinus", 700),
+    load("Geist-Regular.ttf", "Geist", 400),
+    load("Geist-Bold.ttf", "Geist", 700),
   ]);
   return fonts;
 }
@@ -25,7 +27,8 @@ export async function ogOptions() {
   return { ...OG_SIZE, fonts: await ogFonts() };
 }
 
-const C = { ink: "#272525", bg: "#f4f2ef", border: "#e3dfd9", fill: "#ebe8e3", muted: "#6d6863", faint: "#b5afa8", green: "#336021", tint: "#e6eddf", greenText: "#2b4f1c" };
+/** Encyclopedia palette (Wikimedia Codex values). */
+const C = { ink: "#202122", bg: "#ffffff", surface: "#f8f9fa", head: "#eaecf0", border: "#a2a9b1", divider: "#eaecf0", muted: "#54595d", faint: "#72777d", link: "#3366cc", tint: "#eaf3ff" };
 export { C as OG_COLORS };
 
 /** Satori renders PNG, JPEG and GIF. Returns a data URL, or null for anything else. */
@@ -51,21 +54,30 @@ export async function ogImage(url: string | null): Promise<string | null> {
 export function Mark({ size = 44 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 32 32">
-      <rect width="32" height="32" rx="8" fill={C.green} />
+      <rect width="32" height="32" rx="6" fill={C.ink} />
       <path d="M9 18.5 16 11.5l7 7" fill="none" stroke="#fff" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M10.5 23.5h11" stroke="#e68c3a" strokeWidth="3.2" strokeLinecap="round" />
+      <path d="M10.5 23.5h11" stroke={C.border} strokeWidth="3.2" strokeLinecap="round" />
     </svg>
   );
 }
 
+/** Masthead: mark, serif wordmark and the tagline in italics. */
 export function Brand({ size = 30 }: { size?: number }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-      <Mark size={size + 14} />
-      <div style={{ display: "flex", fontSize: size + 4, fontWeight: 700, color: C.ink, fontFamily: "Geist", letterSpacing: -(size + 4) * 0.035 }}>
-        Ship<span style={{ color: C.green }}>Or</span>Skip
+      <Mark size={size + 18} />
+      <div style={{ display: "flex", flexDirection: "column" }}>
+        <div style={{ display: "flex", fontSize: size + 4, fontFamily: "Libertinus", color: C.ink, lineHeight: 1 }}>ShipOrSkip</div>
+        <div style={{ display: "flex", fontSize: Math.round(size * 0.55), fontFamily: "Libertinus", color: C.muted, marginTop: 4 }}>Builders vote. You ship.</div>
       </div>
     </div>
+  );
+}
+
+/** Serif page title over a hairline rule. */
+export function Title({ children, size = 64 }: { children: React.ReactNode; size?: number }) {
+  return (
+    <div style={{ display: "flex", fontFamily: "Libertinus", fontSize: size, lineHeight: 1.12, color: C.ink, borderBottom: `2px solid ${C.border}`, paddingBottom: 8 }}>{children}</div>
   );
 }
 
@@ -76,59 +88,13 @@ export function Thumb({ src, name, width, height, radius = 16, fontSize = 64 }: 
     return <img src={src} alt="" width={width} height={height} style={{ width, height, borderRadius: radius, objectFit: "cover" }} />;
   const [from, to] = tileColors(name);
   return (
-    <div style={{ width, height, borderRadius: radius, backgroundImage: `linear-gradient(135deg, ${from}, ${to})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize, fontWeight: 700, color: "rgba(255,255,255,.92)", letterSpacing: -2 }}>
+    <div style={{ width, height, borderRadius: radius, backgroundImage: `linear-gradient(135deg, ${from}, ${to})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize, fontFamily: "Libertinus", color: TILE_TEXT, border: `1px solid ${C.divider}` }}>
       {(name[0] || "?").toUpperCase()}
     </div>
   );
 }
 
 export const clamp = (s: string, n: number) => (s.length > n ? s.slice(0, n - 1).trimEnd() + "…" : s);
-
-/** Dark share-card palette: charcoal canvas, white type, forest green + ember accents. */
-export const D = { bg: "#1d1b1b", panel: "#2c2a2a", line: "rgba(255,255,255,.08)", text: "#ffffff", muted: "#aaa39c", faint: "#757069", green: "#336021", accent: "#e68c3a" };
-
-/** Full-bleed dark backdrop: faint grid, green glows. Place first inside a relative, overflow-hidden root. */
-export function Backdrop({ glow = "top-right" }: { glow?: "top-right" | "bottom-left" | "center" }) {
-  const at = { "top-right": "85% 0%", "bottom-left": "10% 100%", center: "50% 40%" }[glow];
-  return (
-    <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, display: "flex" }}>
-      <div
-        style={{
-          position: "absolute", top: 0, left: 0, right: 0, bottom: 0, display: "flex",
-          backgroundImage: `linear-gradient(${D.line} 1px, transparent 1px), linear-gradient(90deg, ${D.line} 1px, transparent 1px)`,
-          backgroundSize: "48px 48px",
-          opacity: 0.6,
-        }}
-      />
-      <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, display: "flex", backgroundImage: `radial-gradient(ellipse 60% 70% at ${at}, rgba(51,96,33,.75), transparent 70%)` }} />
-      <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, display: "flex", backgroundImage: "radial-gradient(ellipse 35% 40% at 100% 100%, rgba(230,140,58,.22), transparent 70%)" }} />
-      <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, display: "flex", backgroundImage: "radial-gradient(ellipse 80% 60% at 50% 120%, rgba(29,27,27,1), transparent 70%)" }} />
-    </div>
-  );
-}
-
-/** Logo for dark cards. */
-export function BrandDark({ size = 30 }: { size?: number }) {
-  return (
-    <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-      <Mark size={size + 14} />
-      <div style={{ display: "flex", fontSize: size + 4, fontWeight: 700, color: D.text, fontFamily: "Geist", letterSpacing: -(size + 4) * 0.035 }}>
-        Ship<span style={{ color: D.accent }}>Or</span>Skip
-      </div>
-    </div>
-  );
-}
-
-/** Small rounded label, e.g. "VOTING LIVE". */
-export function Pill({ children, dot = false, tone = "dark" }: { children: React.ReactNode; dot?: boolean; tone?: "dark" | "green" }) {
-  const green = tone === "green";
-  return (
-    <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 18px", borderRadius: 999, background: green ? D.green : "rgba(255,255,255,.06)", border: `1.5px solid ${green ? D.green : "rgba(255,255,255,.12)"}`, color: green ? "#fff" : D.accent, fontSize: 20, fontWeight: 700, fontFamily: "Geist Mono", letterSpacing: 1 }}>
-      {dot && <div style={{ display: "flex", width: 10, height: 10, borderRadius: 999, background: D.accent, boxShadow: "0 0 12px rgba(230,140,58,.9)" }} />}
-      {children}
-    </div>
-  );
-}
 
 /** Public hostname for the footer of share cards. */
 export const host = (url: string) => url.replace(/^https?:\/\//, "");

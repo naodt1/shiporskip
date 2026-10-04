@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   // OG images read these at runtime; make sure they ship with the server bundle.
-  outputFileTracingIncludes: { "/**": ["./assets/fonts/*.ttf"] },
+  outputFileTracingIncludes: { "/**": ["./assets/fonts/*.ttf", "./assets/fonts/*.woff"] },
 };
 
 export default nextConfig;
