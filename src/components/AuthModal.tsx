@@ -7,6 +7,7 @@ import type { PublicUser } from "@/lib/auth";
 import type { AuthMode } from "./AppContext";
 import { GitHubMark } from "./icons";
 import { Logo } from "./Logo";
+import { motion } from "motion/react";
 
 type Field = "handle" | "email" | "pw";
 
@@ -66,12 +67,16 @@ export function AuthModal({
 
   return (
     <>
-      <div onClick={onClose} className="fixed inset-0 z-30 bg-[rgba(26,26,26,.4)]" />
-      <div
+      <motion.div onClick={onClose} className="fixed inset-0 z-30 bg-[rgba(26,26,26,.4)] backdrop-blur-[2px]" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} />
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95, y: 12 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.97, y: 8 }}
+        transition={{ type: "spring", stiffness: 420, damping: 32 }}
         role="dialog"
         aria-modal="true"
         aria-labelledby="auth-heading"
-        className="fixed top-1/2 left-1/2 z-31 max-h-[calc(100vh-32px)] w-[min(400px,calc(100%-32px))] -translate-x-1/2 -translate-y-1/2 overflow-auto rounded-[14px] bg-white p-7 shadow-[0_24px_64px_rgba(0,0,0,.18)]"
+        className="fixed top-1/2 left-1/2 z-31 max-h-[calc(100vh-32px)] w-[min(400px,calc(100%-32px))] -translate-x-1/2 -translate-y-1/2 overflow-auto rounded-2xl bg-white p-7 shadow-[0_24px_64px_rgba(0,0,0,.18)]"
       >
         <button
           onClick={onClose}
@@ -155,7 +160,7 @@ export function AuthModal({
             {signupMode ? "Log in" : "Create an account"}
           </button>
         </p>
-      </div>
+      </motion.div>
     </>
   );
 }

@@ -2,11 +2,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Avatar } from "@/components/Avatar";
+import { Stagger, StaggerItem } from "@/components/motion";
 import { PageHeader } from "@/components/PageHeader";
 import { ArrowUp, Grid } from "@/components/icons";
 import { BoostedPill, TimePill } from "@/components/TimePill";
 import { getUser } from "@/lib/auth";
 import { getFeed, type Sort } from "@/lib/queries";
+import { tileGradient } from "@/lib/tiles";
 
 const LABELS: Record<Sort, string> = { hot: "Hot", new: "New", ending: "Ending soon" };
 
@@ -39,7 +41,7 @@ export default async function FeedPage({ searchParams }: PageProps<"/feed">) {
   return (
     <>
       <PageHeader eyebrow={`Feed · ${LABELS[sort]}`} title={HEAD[sort][0]}>{HEAD[sort][1]}</PageHeader>
-      <div className="overflow-hidden rounded-[10px] border border-border bg-white">
+      <Stagger onMount className="overflow-hidden rounded-2xl border border-border bg-white">
         {items.length === 0 && (
           <div className="px-4 py-10 text-center">
             <p className="m-0 mb-1 font-semibold">Nothing on the table yet.</p>
@@ -48,10 +50,10 @@ export default async function FeedPage({ searchParams }: PageProps<"/feed">) {
           </div>
         )}
         {items.map((b, i) => (
+          <StaggerItem key={b.id}>
           <Link
-            key={b.id}
             href={`/c/${b.id}`}
-            className={`grid w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-3 bg-white px-3.5 py-3.5 sm:gap-4 sm:px-4 text-left no-underline hover:bg-bg hover:text-ink ${i ? "border-t border-divider" : ""}`}
+            className={`group grid w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-3 bg-white px-3.5 py-4 text-left no-underline transition-colors hover:bg-green-tint-3 hover:text-ink sm:gap-4 sm:px-5 ${i ? "border-t border-divider" : ""}`}
           >
             <span className="flex min-w-0 flex-col gap-1.5">
               <span className="flex flex-wrap items-center gap-2 text-[13px] text-muted-2">
@@ -60,19 +62,19 @@ export default async function FeedPage({ searchParams }: PageProps<"/feed">) {
                 <TimePill closesAt={b.closesAt} />
                 {b.boosted && <BoostedPill />}
               </span>
-              <span className="text-base leading-snug font-semibold">{b.title}</span>
+              <span className="text-[17px] leading-snug font-semibold tracking-[-.01em] transition-colors group-hover:text-green-text">{b.title}</span>
               <span className="flex items-center gap-4 text-[13px] text-muted-2">
                 <span title="Votes" className="flex items-center gap-[5px]"><ArrowUp size={14} />{b.total}</span>
                 <span title="Projects" className="flex items-center gap-[5px]"><Grid size={14} />{b.count}</span>
                 {b.voted && <span className="flex items-center gap-1 font-semibold text-green">✓ You picked</span>}
               </span>
             </span>
-            <span className="flex items-center">
+            <span className="flex items-center transition-transform duration-300 group-hover:-translate-x-1">
               {b.thumbs.slice(0, 3).map((t, k) =>
                 t.imageUrl ? (
-                  <img key={k} src={t.imageUrl} alt="" className={`h-10 w-10 rounded-lg border-2 border-white object-cover sm:h-[52px] sm:w-[52px] ${k ? "-ml-3 sm:-ml-3.5" : ""}`} />
+                  <img key={k} src={t.imageUrl} alt="" className={`h-10 w-10 rounded-xl border-2 border-white object-cover shadow-sm sm:h-[52px] sm:w-[52px] ${k ? "-ml-3 sm:-ml-3.5" : ""}`} />
                 ) : (
-                  <span key={k} className={`grid h-10 w-10 place-items-center rounded-lg border-2 border-white bg-fill text-sm font-bold text-muted-3 sm:h-[52px] sm:w-[52px] sm:text-base ${k ? "-ml-3 sm:-ml-3.5" : ""}`}>
+                  <span key={k} style={{ backgroundImage: tileGradient(t.name) }} className={`grid h-10 w-10 place-items-center rounded-xl border-2 border-white text-sm font-bold text-white shadow-sm sm:h-[52px] sm:w-[52px] sm:text-base ${k ? "-ml-3 sm:-ml-3.5" : ""}`}>
                     {t.name[0]?.toUpperCase()}
                   </span>
                 ),
@@ -84,8 +86,9 @@ export default async function FeedPage({ searchParams }: PageProps<"/feed">) {
               )}
             </span>
           </Link>
+          </StaggerItem>
         ))}
-      </div>
+      </Stagger>
     </>
   );
 }

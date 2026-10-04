@@ -1,6 +1,7 @@
 import "server-only";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
+import { tileColors } from "./tiles";
 import { isOurImageUrl } from "./upload";
 
 export const OG_SIZE = { width: 1200, height: 630 };
@@ -68,16 +69,65 @@ export function Brand({ size = 30 }: { size?: number }) {
   );
 }
 
-/** A project image, or its initial on a fill when there's no usable image. */
+/** A project image, or its initial on a colored tile when there's no usable image. */
 export function Thumb({ src, name, width, height, radius = 16, fontSize = 64 }: { src: string | null; name: string; width: number; height: number; radius?: number; fontSize?: number }) {
   if (src)
     // eslint-disable-next-line @next/next/no-img-element
     return <img src={src} alt="" width={width} height={height} style={{ width, height, borderRadius: radius, objectFit: "cover" }} />;
+  const [from, to] = tileColors(name);
   return (
-    <div style={{ width, height, borderRadius: radius, background: C.fill, display: "flex", alignItems: "center", justifyContent: "center", fontSize, fontWeight: 700, color: C.faint }}>
+    <div style={{ width, height, borderRadius: radius, backgroundImage: `linear-gradient(135deg, ${from}, ${to})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize, fontWeight: 700, color: "rgba(255,255,255,.92)", letterSpacing: -2 }}>
       {(name[0] || "?").toUpperCase()}
     </div>
   );
 }
 
 export const clamp = (s: string, n: number) => (s.length > n ? s.slice(0, n - 1).trimEnd() + "…" : s);
+
+/** Dark share-card palette: deep green-black canvas, white type, signal green accents. */
+export const D = { bg: "#0d120f", panel: "#151c18", line: "rgba(255,255,255,.08)", text: "#ffffff", muted: "#9aa59e", faint: "#5d6862", green: "#2f7a4a", bright: "#7fd19b" };
+
+/** Full-bleed dark backdrop: faint grid, green glows. Place first inside a relative, overflow-hidden root. */
+export function Backdrop({ glow = "top-right" }: { glow?: "top-right" | "bottom-left" | "center" }) {
+  const at = { "top-right": "85% 0%", "bottom-left": "10% 100%", center: "50% 40%" }[glow];
+  return (
+    <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, display: "flex" }}>
+      <div
+        style={{
+          position: "absolute", top: 0, left: 0, right: 0, bottom: 0, display: "flex",
+          backgroundImage: `linear-gradient(${D.line} 1px, transparent 1px), linear-gradient(90deg, ${D.line} 1px, transparent 1px)`,
+          backgroundSize: "48px 48px",
+          opacity: 0.6,
+        }}
+      />
+      <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, display: "flex", backgroundImage: `radial-gradient(ellipse 60% 70% at ${at}, rgba(47,122,74,.55), transparent 70%)` }} />
+      <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, display: "flex", backgroundImage: "radial-gradient(ellipse 80% 60% at 50% 120%, rgba(13,18,15,1), transparent 70%)" }} />
+    </div>
+  );
+}
+
+/** Logo for dark cards. */
+export function BrandDark({ size = 30 }: { size?: number }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+      <Mark size={size + 14} />
+      <div style={{ display: "flex", fontSize: size + 4, fontWeight: 700, color: D.text, fontFamily: "Geist", letterSpacing: -(size + 4) * 0.035 }}>
+        Ship<span style={{ color: D.bright }}>Or</span>Skip
+      </div>
+    </div>
+  );
+}
+
+/** Small rounded label, e.g. "VOTING LIVE". */
+export function Pill({ children, dot = false, tone = "dark" }: { children: React.ReactNode; dot?: boolean; tone?: "dark" | "green" }) {
+  const green = tone === "green";
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 18px", borderRadius: 999, background: green ? D.green : "rgba(255,255,255,.06)", border: `1.5px solid ${green ? D.green : "rgba(255,255,255,.12)"}`, color: green ? "#fff" : D.bright, fontSize: 20, fontWeight: 700, fontFamily: "Geist Mono", letterSpacing: 1 }}>
+      {dot && <div style={{ display: "flex", width: 10, height: 10, borderRadius: 999, background: D.bright, boxShadow: "0 0 12px rgba(127,209,155,.9)" }} />}
+      {children}
+    </div>
+  );
+}
+
+/** Public hostname for the footer of share cards. */
+export const host = (url: string) => url.replace(/^https?:\/\//, "");

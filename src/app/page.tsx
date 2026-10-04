@@ -2,16 +2,17 @@ import Link from "next/link";
 import { Avatar } from "@/components/Avatar";
 import { ChevronUp, Clock, GitHubMark, Grid } from "@/components/icons";
 import { LandingDemo } from "@/components/LandingDemo";
+import { CountUp, HeroHeadline, Reveal, Stagger, StaggerItem } from "@/components/motion";
 import { Logo, Mark } from "@/components/Logo";
 import { Eyebrow, SiteFooter } from "@/components/SiteFooter";
 import { getUser } from "@/lib/auth";
 import { BOOST_HOURS, BOOST_PRICE_CENTS, CAMPAIGN_DAYS, MAX_PROJECTS, MIN_COMMITS, MIN_PROJECTS, appUrl } from "@/lib/config";
 import { timeShort } from "@/lib/format";
-import { getFeed, getShippedBoard } from "@/lib/queries";
+import { getFeed, getShippedBoard, getStats } from "@/lib/queries";
 
 export default async function Landing() {
   const user = await getUser();
-  const [today, shipped] = await Promise.all([getFeed("hot", user?.id ?? null, 4), getShippedBoard(4)]);
+  const [today, shipped, stats] = await Promise.all([getFeed("hot", user?.id ?? null, 4), getShippedBoard(12), getStats()]);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -28,67 +29,129 @@ export default async function Landing() {
         <div className="mx-auto flex max-w-[1120px] items-center gap-6 px-4 py-3 sm:px-5">
           <Link href="/" aria-label="ShipOrSkip home" className="no-underline"><Logo /></Link>
           <nav className="hidden gap-5 text-[15px] sm:flex">
-            <a href="#how" className="text-muted no-underline">How it works</a>
-            <a href="#today" className="text-muted no-underline">Voting now</a>
+            <a href="#how" className="nav-link text-muted no-underline">How it works</a>
+            <a href="#today" className="nav-link text-muted no-underline">Voting now</a>
           </nav>
           <div className="ml-auto flex items-center gap-2 sm:gap-2.5">
             {!user && <Link href="/feed?login=1" className="px-2 py-[7px] text-[15px] whitespace-nowrap no-underline">Log in</Link>}
-            <Link href="/feed?post=1" className="rounded-md bg-green px-3.5 py-2 text-[15px] font-semibold whitespace-nowrap text-white no-underline hover:bg-green-hover hover:text-white">Post projects</Link>
+            <Link href="/feed?post=1" className="press cta-glow rounded-md bg-green px-3.5 py-2 text-[15px] font-semibold whitespace-nowrap text-white no-underline hover:bg-green-hover hover:text-white">Post projects</Link>
           </div>
         </div>
       </header>
 
       <div className="brand-grid border-b border-border">
-      <section className="mx-auto grid max-w-[1120px] grid-cols-[repeat(auto-fit,minmax(min(100%,420px),1fr))] items-center gap-10 px-4 pt-10 pb-12 sm:gap-12 sm:px-5 sm:pt-18 sm:pb-16">
+      <section className="mx-auto grid max-w-[1120px] grid-cols-[repeat(auto-fit,minmax(min(100%,420px),1fr))] items-center gap-12 px-4 pt-12 pb-16 sm:gap-14 sm:px-5 sm:pt-20 sm:pb-24">
         <div>
-          <span className="mb-4.5 inline-flex items-center gap-1.5 rounded-full bg-green-tint-2 px-2.5 py-[3px] text-[13px] font-semibold text-green-text">
-            For builders with a graveyard of side projects
-          </span>
-          <h1 className="m-0 mb-4 text-[clamp(36px,5vw,56px)] leading-[1.02] font-bold tracking-[-.035em] text-balance">You can’t finish them all. Let builders pick the one you <span className="text-green">ship.</span></h1>
-          <p className="m-0 mb-7 max-w-[460px] text-lg text-pretty text-muted">
-            Line up {MIN_PROJECTS}–{MAX_PROJECTS} half-built repos. For {CAMPAIGN_DAYS} days, other indie hackers vote and tell you why. Then you commit to the winner and actually ship it.
-          </p>
-          <div className="flex flex-wrap gap-3">
-            <Link href="/feed?post=1" className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-green px-5 py-3 whitespace-nowrap sm:flex-none text-base font-semibold text-white no-underline hover:bg-green-hover hover:text-white">
-              <GitHubMark />
-              Post from GitHub
-            </Link>
-            <Link href="/feed" className="flex-1 rounded-lg border border-outline bg-white px-5 py-[11px] text-center text-base font-semibold whitespace-nowrap no-underline sm:flex-none">Vote on projects</Link>
-          </div>
-          <p className="m-0 mt-3.5 text-[13px] text-muted-3">Free to post. Read-only GitHub access.</p>
+          <Reveal y={8}>
+            {stats.live > 0 ? (
+              <Link href="/feed" className="mb-5 inline-flex items-center gap-2 rounded-full border border-green/20 bg-white/80 py-1 pr-3 pl-2.5 text-[13px] font-semibold text-green-text no-underline shadow-sm backdrop-blur hover:border-green/40 hover:text-green-text">
+                <span className="live-dot" />
+                {stats.live} campaign{stats.live === 1 ? "" : "s"} voting now
+                <span className="text-green">→</span>
+              </Link>
+            ) : (
+              <span className="mb-5 inline-flex items-center gap-2 rounded-full border border-green/20 bg-white/80 py-1 pr-3 pl-2.5 text-[13px] font-semibold text-green-text shadow-sm">
+                <span className="live-dot" />
+                For builders with a graveyard of side projects
+              </span>
+            )}
+          </Reveal>
+          <HeroHeadline
+            text="You can’t finish them all. Let builders pick the one you"
+            accent="ship."
+            className="m-0 mb-5 text-[clamp(38px,5.4vw,62px)] leading-[1.02] font-bold tracking-[-.04em] text-balance"
+          />
+          <Reveal delay={0.55} y={10}>
+            <p className="m-0 mb-7 max-w-[470px] text-lg text-pretty text-muted">
+              Line up {MIN_PROJECTS}–{MAX_PROJECTS} half-built repos. For {CAMPAIGN_DAYS} days, other indie hackers vote and tell you why. Then you commit to the winner and actually ship it.
+            </p>
+          </Reveal>
+          <Reveal delay={0.68} y={10}>
+            <div className="flex flex-wrap gap-3">
+              <Link href="/feed?post=1" className="press cta-glow flex flex-1 items-center justify-center gap-2 rounded-xl bg-green px-5.5 py-3.5 text-base font-semibold whitespace-nowrap text-white no-underline hover:bg-green-hover hover:text-white sm:flex-none">
+                <GitHubMark />
+                Post from GitHub
+              </Link>
+              <Link href="/feed" className="press flex-1 rounded-xl border border-outline bg-white px-5.5 py-[13px] text-center text-base font-semibold whitespace-nowrap no-underline hover:border-ink sm:flex-none">
+                Vote on projects
+              </Link>
+            </div>
+            <p className="m-0 mt-4 flex flex-wrap gap-x-4 gap-y-1 text-[13px] text-muted-3">
+              <span>✓ Free to post</span>
+              <span>✓ Read-only GitHub access</span>
+              <span>✓ Answer in {CAMPAIGN_DAYS} days</span>
+            </p>
+          </Reveal>
         </div>
         <LandingDemo />
       </section>
       </div>
 
-      <section id="how" className="mx-auto max-w-[1120px] px-4 pt-6 pb-12 sm:px-5 sm:pt-10 sm:pb-14">
-        <Eyebrow tone="green" className="mb-2">How it works</Eyebrow>
-        <h2 className="m-0 mb-6 text-[28px] leading-tight font-bold tracking-[-.025em]">Three days from “which one?” to “this one.”</h2>
-        <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,240px),1fr))] gap-3.5">
-          {[
-            ["01", "Line up your contenders", `Pick ${MIN_PROJECTS}–${MAX_PROJECTS} public repos you’ve started but not released. Add a screenshot and an early-access offer.`],
-            ["02", "Builders vote, with reasons", `Campaigns run ${CAMPAIGN_DAYS} days. One vote per person, plus a line on why. Voters unlock your offer.`],
-            ["03", "Commit and ship", "Publicly commit to the winner, then mark it shipped when it’s live. No more maybe-next-weekend."],
-          ].map(([n, t, d]) => (
-            <div key={n} className="rounded-[10px] border border-border bg-white p-5">
-              <div className="mb-3 grid h-8 w-8 place-items-center rounded-md bg-green-tint-2 font-mono text-[13px] font-bold text-green-text">{n}</div>
-              <div className="mb-1 font-bold">{t}</div>
-              <div className="text-[15px] text-muted-2">{d}</div>
-            </div>
-          ))}
+      {stats.votes > 0 && (
+        <section className="border-b border-border bg-white">
+          <Stagger className="mx-auto grid max-w-[1120px] grid-cols-3 divide-x divide-divider px-4 sm:px-5">
+            {[
+              [stats.live, "campaigns live"],
+              [stats.votes, "votes cast"],
+              [stats.shipped, "projects shipped"],
+            ].map(([n, label]) => (
+              <StaggerItem key={label} className="flex flex-col items-center gap-0.5 px-2 py-6 text-center sm:py-8">
+                <CountUp to={n as number} className="font-mono text-[26px] font-bold tracking-[-.03em] text-ink tabular-nums sm:text-[36px]" />
+                <span className="text-[13px] text-muted-2 sm:text-sm">{label}</span>
+              </StaggerItem>
+            ))}
+          </Stagger>
+        </section>
+      )}
+
+      {shipped.length > 0 && (
+        <div className="marquee-mask overflow-hidden border-b border-border bg-bg py-3" aria-label="Recently shipped">
+          <div className="marquee gap-3">
+            {[...shipped, ...shipped].map((s, i) => (
+              <span key={i} aria-hidden={i >= shipped.length} className="flex shrink-0 items-center gap-2 rounded-full border border-border bg-white py-1.5 pr-3.5 pl-2 text-[14px] whitespace-nowrap">
+                <span className="grid h-6 w-6 place-items-center rounded-full bg-green-tint-2 text-[12px]">🚀</span>
+                <b>{s.title}</b>
+                <span className="text-muted-3">{s.sub}</span>
+                <span className="font-mono text-xs font-bold text-green">shipped in {s.days}d</span>
+              </span>
+            ))}
+          </div>
         </div>
+      )}
+
+      <section id="how" className="mx-auto max-w-[1120px] scroll-mt-16 px-4 pt-16 pb-14 sm:px-5 sm:pt-24 sm:pb-20">
+        <Reveal>
+          <Eyebrow tone="green" className="mb-2">How it works</Eyebrow>
+          <h2 className="m-0 mb-8 max-w-[560px] text-[clamp(28px,3.6vw,40px)] leading-[1.08] font-bold tracking-[-.035em] text-balance">Three days from “which one?” to “this one.”</h2>
+        </Reveal>
+        <Stagger className="relative grid grid-cols-[repeat(auto-fit,minmax(min(100%,260px),1fr))] gap-4">
+          {(
+            [
+              ["01", "Line up your contenders", `Pick ${MIN_PROJECTS}–${MAX_PROJECTS} public repos you’ve started but not released. Add a screenshot and an early-access offer.`, <GitHubMark key="i" />],
+              ["02", "Builders vote, with reasons", `Campaigns run ${CAMPAIGN_DAYS} days. One vote per person, plus a line on why. Voters unlock your offer.`, <ChevronUp key="i" size={18} />],
+              ["03", "Commit and ship", "Publicly commit to the winner, then mark it shipped when it’s live. No more maybe-next-weekend.", <span key="i" className="text-[15px]">🚀</span>],
+            ] as const
+          ).map(([n, t, d, icon]) => (
+            <StaggerItem key={n} lift className="group relative overflow-hidden rounded-2xl border border-border bg-white p-6 transition-shadow hover:shadow-[0_18px_40px_-18px_rgba(26,26,26,.25)]">
+              <span aria-hidden className="pointer-events-none absolute -top-6 -right-2 font-mono text-[96px] leading-none font-bold text-fill-2 transition-colors group-hover:text-green-tint-3">{n}</span>
+              <div className="relative mb-5 grid h-11 w-11 place-items-center rounded-xl bg-green text-white shadow-[0_8px_20px_-8px_rgba(47,122,74,.6)]">{icon}</div>
+              <div className="relative mb-1.5 text-lg font-bold tracking-[-.01em]">{t}</div>
+              <div className="relative text-[15px] text-pretty text-muted-2">{d}</div>
+            </StaggerItem>
+          ))}
+        </Stagger>
       </section>
 
-      <section id="today" className="mx-auto flex max-w-[1120px] flex-wrap items-start gap-7 px-4 pt-4 pb-12 sm:px-5 sm:pb-16">
+      <section id="today" className="mx-auto flex max-w-[1120px] scroll-mt-16 flex-wrap items-start gap-7 px-4 pt-2 pb-14 sm:px-5 sm:pb-20">
         <div className="min-w-0 flex-[2_1_520px] max-sm:basis-full">
           <div className="mb-3.5 flex items-baseline justify-between">
-            <h2 className="m-0 text-xl font-bold tracking-[-.02em] sm:text-2xl">Voting now</h2>
+            <h2 className="m-0 flex items-center gap-2.5 text-xl font-bold tracking-[-.025em] sm:text-[26px]"><span className="live-dot" />Voting now</h2>
             <Link href="/feed" className="text-sm font-semibold text-green no-underline">See all →</Link>
           </div>
-          <div className="overflow-hidden rounded-[10px] border border-border bg-white">
+          <Stagger className="overflow-hidden rounded-2xl border border-border bg-white">
             {today.length === 0 && <p className="m-0 px-4 py-6 text-center text-sm text-muted-2">No campaigns yet. <Link href="/feed?post=1" className="font-semibold text-green no-underline">Post the first one →</Link></p>}
             {today.map((t, i) => (
-              <div key={t.id} className={`grid grid-cols-[28px_minmax(0,1fr)_auto] items-center gap-3 px-3.5 py-3.5 sm:gap-3.5 sm:px-4 ${i ? "border-t border-divider" : ""}`}>
+              <StaggerItem key={t.id} className={`grid grid-cols-[28px_minmax(0,1fr)_auto] items-center gap-3 px-3.5 py-4 transition-colors hover:bg-bg sm:gap-3.5 sm:px-5 ${i ? "border-t border-divider" : ""}`}>
                 <span className="font-mono text-sm font-bold text-muted-3">{i + 1}</span>
                 <div className="flex min-w-0 flex-col gap-1">
                   <Link href={`/c/${t.id}`} className="leading-snug font-semibold no-underline">{t.title}</Link>
@@ -101,28 +164,28 @@ export default async function Landing() {
                 <Link
                   href={`/c/${t.id}`}
                   aria-label={t.voted ? "Voted" : "Vote"}
-                  className={`flex w-14 flex-col items-center rounded-lg border py-1.5 no-underline hover:border-green ${t.voted ? "border-green bg-green-tint-2 text-green-text hover:text-green-text" : "border-border bg-white text-muted hover:text-muted"}`}
+                  className={`press flex w-14 flex-col items-center rounded-xl border py-1.5 no-underline hover:border-green ${t.voted ? "border-green bg-green-tint-2 text-green-text hover:text-green-text" : "border-border bg-white text-muted hover:text-muted"}`}
                 >
                   <ChevronUp size={14} />
                   <span className="font-mono text-[13px] font-bold">{t.total}</span>
                 </Link>
-              </div>
+              </StaggerItem>
             ))}
-          </div>
+          </Stagger>
         </div>
 
-        <aside className="flex flex-[1_1_280px] flex-col gap-3.5 max-sm:basis-full">
-          <div className="rounded-[10px] border border-border bg-white p-4">
+        <Reveal className="flex flex-[1_1_280px] flex-col gap-3.5 max-sm:basis-full" delay={0.1}>
+          <div className="rounded-2xl border border-border bg-white p-5">
             <Eyebrow className="mb-2.5">Shipped after the vote</Eyebrow>
             {shipped.length === 0 && <div className="text-sm text-muted-3">Nobody’s shipped yet. Could be you.</div>}
-            {shipped.map((s, i) => (
+            {shipped.slice(0, 4).map((s, i) => (
               <div key={i} className={`flex justify-between gap-2.5 py-[7px] text-[15px] ${i ? "border-t border-divider" : ""}`}>
                 <span><b>{s.title}</b> <span className="text-muted-3">{s.sub}</span></span>
                 <span className="font-mono text-[13px] text-green">{s.days}d</span>
               </div>
             ))}
           </div>
-          <div className="rounded-[10px] border border-border bg-white p-4">
+          <div className="rounded-2xl border border-border bg-white p-5">
             <Eyebrow className="mb-2.5">House rules</Eyebrow>
             <div className="flex flex-col gap-2 text-[15px]">
               {["Public GitHub repos only", `Started: ${MIN_COMMITS}+ commits`, "Not finished: no release yet", `Free to post. $${BOOST_PRICE_CENTS / 100} to boost for ${BOOST_HOURS}h.`].map((r) => (
@@ -130,20 +193,20 @@ export default async function Landing() {
               ))}
             </div>
           </div>
-        </aside>
+        </Reveal>
       </section>
 
-      <section className="mx-auto max-w-[1120px] px-4 pb-12 sm:px-5 sm:pb-18">
-        <div className="relative flex flex-wrap items-center justify-between gap-6 overflow-hidden rounded-[14px] bg-ink px-6 py-8 text-white sm:px-10 sm:py-12">
-          <Mark size={220} className="pointer-events-none absolute -right-10 -bottom-16 opacity-[.07] max-sm:hidden" />
+      <Reveal as="section" className="mx-auto max-w-[1120px] px-4 pb-14 sm:px-5 sm:pb-20">
+        <div className="cta-dark relative flex flex-wrap items-center justify-between gap-6 overflow-hidden rounded-3xl bg-ink px-6 py-10 text-white sm:px-12 sm:py-16">
+          <Mark size={260} className="float-slow pointer-events-none absolute -right-12 -bottom-20 opacity-[.09] max-sm:hidden" />
           <div className="relative">
             <Eyebrow tone="bright" className="mb-2">Ship it or skip it</Eyebrow>
-            <h2 className="m-0 mb-1.5 text-2xl leading-[1.15] font-bold tracking-[-.025em] sm:text-[32px]">Which one should you finish?</h2>
+            <h2 className="m-0 mb-2 text-[28px] leading-[1.08] font-bold tracking-[-.035em] sm:text-[44px]">Which one should you finish?</h2>
             <p className="m-0 text-faint">Stop guessing. Get a straight answer in {CAMPAIGN_DAYS} days.</p>
           </div>
-          <Link href="/feed?post=1" className="relative rounded-lg bg-green px-5.5 py-3 text-base font-semibold text-white no-underline hover:bg-green-hover hover:text-white">Post your projects</Link>
+          <Link href="/feed?post=1" className="press cta-glow relative rounded-xl bg-green px-6 py-3.5 text-base font-semibold text-white no-underline hover:bg-green-hover hover:text-white">Post your projects →</Link>
         </div>
-      </section>
+      </Reveal>
 
       <SiteFooter />
     </div>

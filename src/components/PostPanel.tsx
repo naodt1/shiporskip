@@ -7,6 +7,7 @@ import { MAX_PROJECTS, MIN_PROJECTS } from "@/lib/config";
 import { agoShort } from "@/lib/format";
 import type { Repo } from "@/lib/github";
 import { useApp } from "./AppContext";
+import { motion } from "motion/react";
 
 type Extra = { preview?: string; imageUrl?: string; uploading?: boolean; offer?: string; code?: string };
 
@@ -90,8 +91,8 @@ export function PostPanel({ githubMock, onClose, onPosted }: { githubMock: boole
 
   return (
     <>
-      <div onClick={onClose} className="fixed inset-0 z-30 bg-[rgba(26,26,26,.28)]" />
-      <div role="dialog" aria-modal="true" aria-labelledby="post-heading" className="fixed top-0 right-0 bottom-0 z-31 w-[min(480px,100%)] overflow-auto overscroll-contain bg-white p-5 pb-[max(20px,env(safe-area-inset-bottom))] sm:p-6 shadow-[-12px_0_32px_rgba(0,0,0,.1)]">
+      <motion.div onClick={onClose} className="fixed inset-0 z-30 bg-[rgba(26,26,26,.28)] backdrop-blur-[2px]" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} />
+      <motion.div initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} transition={{ type: "spring", stiffness: 380, damping: 38 }} role="dialog" aria-modal="true" aria-labelledby="post-heading" className="fixed top-0 right-0 bottom-0 z-31 w-[min(480px,100%)] overflow-auto overscroll-contain bg-white p-5 pb-[max(20px,env(safe-area-inset-bottom))] sm:p-6 shadow-[-12px_0_32px_rgba(0,0,0,.1)]">
         <button onClick={onClose} aria-label="Close" className="absolute top-4 right-4 p-1 text-[22px] leading-none text-muted-2 hover:text-ink">
           ×
         </button>
@@ -208,7 +209,7 @@ export function PostPanel({ githubMock, onClose, onPosted }: { githubMock: boole
             {error && <p className="m-0 text-sm text-urgent">{error}</p>}
           </div>
         )}
-      </div>
+      </motion.div>
     </>
   );
 }

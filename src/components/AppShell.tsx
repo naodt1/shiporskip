@@ -1,5 +1,6 @@
 "use client";
 
+import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -97,7 +98,7 @@ export function AppShell({ user, topBuilders, githubMock, children }: { user: Pu
               <TopNav goMine={goMine} />
             </Suspense>
             <div className="ml-auto flex items-center gap-2 sm:gap-2.5">
-              <button onClick={openPost} className="rounded-md bg-green px-3 py-2 text-[15px] font-semibold whitespace-nowrap text-white hover:bg-green-hover sm:px-3.5">
+              <button onClick={openPost} className="press cta-glow rounded-lg bg-green px-3 py-2 text-[15px] font-semibold whitespace-nowrap text-white hover:bg-green-hover sm:px-3.5">
                 + Post
               </button>
               {me ? (
@@ -139,8 +140,10 @@ export function AppShell({ user, topBuilders, githubMock, children }: { user: Pu
         </div>
         <SiteFooter />
 
+        <AnimatePresence>
         {postOpen && (
           <PostPanel
+            key="post"
             githubMock={githubMock}
             onClose={() => setPostOpen(false)}
             onPosted={(id) => {
@@ -152,6 +155,7 @@ export function AppShell({ user, topBuilders, githubMock, children }: { user: Pu
         )}
         {auth && (
           <AuthModal
+            key="auth"
             mode={auth.mode}
             reason={auth.reason}
             onMode={(mode) => setAuth({ ...auth, mode })}
@@ -164,10 +168,19 @@ export function AppShell({ user, topBuilders, githubMock, children }: { user: Pu
           />
         )}
         {toastText && (
-          <div role="status" className="fixed bottom-[max(24px,env(safe-area-inset-bottom))] left-1/2 z-40 w-max max-w-[calc(100%-32px)] -translate-x-1/2 rounded-lg bg-ink px-4 py-2.5 text-center text-[15px] text-white">
+          <motion.div
+            key={toastText}
+            role="status"
+            initial={{ opacity: 0, y: 16, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 8, scale: 0.98 }}
+            transition={{ type: "spring", stiffness: 500, damping: 34 }}
+            className="fixed bottom-[max(24px,env(safe-area-inset-bottom))] left-1/2 z-40 w-max max-w-[calc(100%-32px)] -translate-x-1/2 rounded-xl bg-ink px-4 py-2.5 text-center text-[15px] text-white shadow-[0_12px_32px_-8px_rgba(0,0,0,.35)]"
+          >
             {toastText}
-          </div>
+          </motion.div>
         )}
+        </AnimatePresence>
         <Suspense>
           <UrlSignals onPost={openPost} onLogin={openAuth} toast={toast} />
         </Suspense>
@@ -189,29 +202,43 @@ function useActive() {
 function SideNav({ goMine }: { goMine: () => void }) {
   const active = useActive();
   const item = (on: boolean) =>
-    `flex items-center gap-2.5 rounded-md px-2.5 py-[7px] text-left text-[15px] no-underline hover:bg-fill ${on ? "bg-green-tint-2 font-semibold text-green-text hover:text-green-text" : "text-ink hover:text-ink"}`;
+    `relative flex items-center gap-2.5 rounded-lg px-2.5 py-[7px] text-left text-[15px] no-underline transition-colors ${on ? "font-semibold text-green-text hover:text-green-text" : "text-ink hover:bg-fill hover:text-ink"}`;
+  // The highlight is one shared element that slides to whichever item is active.
+  const pill = (on: boolean) =>
+    on && <motion.span layoutId="side-pill" className="absolute inset-0 -z-1 rounded-lg bg-green-tint-2" transition={{ type: "spring", stiffness: 500, damping: 38 }} />;
+  const links: [string, string, React.ReactNode, string][] = [
+    ["hot", "/feed", <Flame key="i" />, "Hot"],
+    ["new", "/feed?sort=new", <Plus key="i" />, "New"],
+    ["ending", "/feed?sort=ending", <Clock key="i" />, "Ending soon"],
+  ];
   return (
-    <nav className="flex flex-col gap-0.5">
-      <Link href="/feed" className={item(active("hot"))}><Flame />Hot</Link>
-      <Link href="/feed?sort=new" className={item(active("new"))}><Plus />New</Link>
-      <Link href="/feed?sort=ending" className={item(active("ending"))}><Clock />Ending soon</Link>
+    <nav className="isolate flex flex-col gap-0.5">
+      {links.map(([k, href, icon, label]) => (
+        <Link key={k} href={href} className={item(active(k))}>
+          {pill(active(k))}
+          {icon}
+          {label}
+        </Link>
+      ))}
       <span className="mx-2.5 my-2 h-px bg-border" />
-      <Link href="/leaderboards" className={item(active("leaderboards"))}><Trophy />Leaderboards</Link>
-      <button onClick={goMine} className={item(active("me"))}><Grid />My projects</button>
-      <Link href="/about" className={item(active("about"))}><Info />About</Link>
+      <Link href="/leaderboards" className={item(active("leaderboards"))}>{pill(active("leaderboards"))}<Trophy />Leaderboards</Link>
+      <button onClick={goMine} className={item(active("me"))}>{pill(active("me"))}<Grid />My projects</button>
+      <Link href="/about" className={item(active("about"))}>{pill(active("about"))}<Info />About</Link>
     </nav>
   );
 }
 
 function TopNav({ goMine }: { goMine: () => void }) {
   const active = useActive();
-  const pill = (on: boolean) => `shrink-0 rounded-md px-3 py-1.5 text-[15px] no-underline hover:bg-fill hover:text-ink ${on ? "bg-fill font-semibold" : ""}`;
+  const pill = (on: boolean) => `relative shrink-0 rounded-lg px-3 py-1.5 text-[15px] no-underline hover:text-ink ${on ? "font-semibold text-green-text hover:text-green-text" : ""}`;
+  const bg = (on: boolean) =>
+    on && <motion.span layoutId="top-pill" className="absolute inset-0 -z-1 rounded-lg bg-green-tint-2" transition={{ type: "spring", stiffness: 500, damping: 38 }} />;
   return (
-    <nav className="no-scrollbar order-last -mx-4 flex w-[calc(100%+32px)] gap-1 overflow-x-auto px-4 whitespace-nowrap sm:-mx-5 sm:w-[calc(100%+40px)] sm:px-5 min-[860px]:hidden">
-      <Link href="/feed" className={pill(active("feed"))}>Vote</Link>
-      <Link href="/leaderboards" className={pill(active("leaderboards"))}>Leaderboards</Link>
-      <button onClick={goMine} className={pill(active("me"))}>My projects</button>
-      <Link href="/about" className={pill(active("about"))}>About</Link>
+    <nav className="no-scrollbar isolate order-last -mx-4 flex w-[calc(100%+32px)] gap-1 overflow-x-auto px-4 whitespace-nowrap sm:-mx-5 sm:w-[calc(100%+40px)] sm:px-5 min-[860px]:hidden">
+      <Link href="/feed" className={pill(active("feed"))}>{bg(active("feed"))}Vote</Link>
+      <Link href="/leaderboards" className={pill(active("leaderboards"))}>{bg(active("leaderboards"))}Leaderboards</Link>
+      <button onClick={goMine} className={pill(active("me"))}>{bg(active("me"))}My projects</button>
+      <Link href="/about" className={pill(active("about"))}>{bg(active("about"))}About</Link>
     </nav>
   );
 }

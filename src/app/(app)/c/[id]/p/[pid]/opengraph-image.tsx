@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
-import { Brand, ogOptions, clamp, ogImage, OG_COLORS as C, OG_SIZE, Thumb } from "@/lib/og";
+import { appUrl } from "@/lib/config";
+import { Backdrop, BrandDark, clamp, D, host, ogImage, ogOptions, OG_SIZE, Pill, Thumb } from "@/lib/og";
 import { getCampaign } from "@/lib/queries";
 
 export const size = OG_SIZE;
@@ -12,35 +13,50 @@ export default async function Image({ params }: { params: Promise<{ id: string; 
   const p = c?.projects.find((x) => x.id === pid);
   const others = (c?.projects ?? []).filter((x) => x.id !== pid).slice(0, 4);
   const [hero, ...rest] = await Promise.all([ogImage(p?.imageUrl ?? null), ...others.map((o) => ogImage(o.imageUrl))]);
+  const total = (c?.projects ?? []).reduce((a, x) => a + x.votes, 0);
+  const pct = p && total ? Math.round((p.votes / total) * 100) : null;
 
   return new ImageResponse(
     (
-      <div style={{ width: "100%", height: "100%", display: "flex", background: C.bg, padding: 56, gap: 52, color: C.ink, fontFamily: "Geist" }}>
-        <div style={{ display: "flex", border: `2px solid ${C.border}`, borderRadius: 24, overflow: "hidden", alignSelf: "center" }}>
-          <Thumb src={hero} name={p?.name ?? "?"} width={560} height={518} radius={0} fontSize={200} />
-        </div>
-        <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
-          <Brand size={24} />
-          <div style={{ display: "flex", marginTop: 40, fontSize: 22, fontWeight: 700, letterSpacing: 2, color: C.green }}>VOTE TO SHIP</div>
-          <div style={{ display: "flex", fontSize: 64, fontWeight: 700, lineHeight: 1.05, letterSpacing: -1.5, marginTop: 8 }}>{clamp(p?.name ?? "Project", 18)}</div>
-          <div style={{ display: "flex", fontSize: 26, lineHeight: 1.3, color: C.muted, marginTop: 14 }}>{clamp(p?.oneliner ?? "", 90)}</div>
-          {p?.offer && (
-            <div style={{ display: "flex", marginTop: 18 }}>
-              <div style={{ display: "flex", fontSize: 22, fontWeight: 700, background: C.tint, color: C.greenText, borderRadius: 8, padding: "4px 12px" }}>{clamp(p.offer, 36)}</div>
+      <div style={{ position: "relative", width: "100%", height: "100%", display: "flex", background: D.bg, color: D.text, fontFamily: "Geist", padding: 56, gap: 56, overflow: "hidden" }}>
+        <Backdrop glow="bottom-left" />
+
+        <div style={{ position: "relative", display: "flex", alignSelf: "center" }}>
+          <div style={{ position: "absolute", top: 18, left: -14, display: "flex", width: 500, height: 480, borderRadius: 30, background: "rgba(255,255,255,.05)", border: `1.5px solid ${D.line}`, transform: "rotate(-5deg)" }} />
+          <div style={{ display: "flex", borderRadius: 30, overflow: "hidden", border: "4px solid #ffffff", boxShadow: "0 40px 80px -20px rgba(0,0,0,.7)", transform: "rotate(2deg)" }}>
+            <Thumb src={hero} name={p?.name ?? "?"} width={492} height={480} radius={0} fontSize={200} />
+          </div>
+          {pct != null && (
+            <div style={{ position: "absolute", bottom: -14, right: -18, display: "flex", transform: "rotate(-4deg)" }}>
+              <Pill tone="green">{`${pct}% OF VOTES`}</Pill>
             </div>
           )}
-          <div style={{ display: "flex", flexDirection: "column", marginTop: "auto", gap: 12 }}>
+        </div>
+
+        <div style={{ position: "relative", display: "flex", flexDirection: "column", flex: 1 }}>
+          <BrandDark size={24} />
+          <div style={{ display: "flex", marginTop: 44, fontSize: 20, fontFamily: "Geist Mono", fontWeight: 700, letterSpacing: 2, color: D.bright }}>VOTE TO SHIP</div>
+          <div style={{ display: "flex", fontSize: 76, fontWeight: 700, lineHeight: 1, letterSpacing: -3, marginTop: 10 }}>{clamp(p?.name ?? "Project", 14)}</div>
+          <div style={{ display: "flex", fontSize: 27, lineHeight: 1.3, color: D.muted, marginTop: 16 }}>{clamp(p?.oneliner ?? "", 84)}</div>
+          {p?.offer && (
+            <div style={{ display: "flex", marginTop: 20 }}>
+              <div style={{ display: "flex", fontSize: 21, fontWeight: 700, background: "rgba(127,209,155,.14)", color: D.bright, border: "1.5px solid rgba(127,209,155,.35)", borderRadius: 10, padding: "6px 14px" }}>
+                {clamp(p.offer, 36)}
+              </div>
+            </div>
+          )}
+          <div style={{ display: "flex", flexDirection: "column", marginTop: "auto", gap: 14 }}>
             {others.length > 0 && (
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <div style={{ display: "flex", fontSize: 20, color: C.muted, marginRight: 6 }}>vs</div>
+                <div style={{ display: "flex", fontSize: 20, fontFamily: "Geist Mono", fontWeight: 700, color: D.faint, marginRight: 8 }}>VS</div>
                 {others.map((o, i) => (
-                  <div key={o.id} style={{ display: "flex", border: "3px solid #fff", borderRadius: 12, marginLeft: i ? -18 : 0 }}>
-                    <Thumb src={rest[i]} name={o.name} width={64} height={64} radius={10} fontSize={26} />
+                  <div key={o.id} style={{ display: "flex", border: `3px solid ${D.bg}`, borderRadius: 14, marginLeft: i ? -16 : 0 }}>
+                    <Thumb src={rest[i]} name={o.name} width={62} height={62} radius={11} fontSize={26} />
                   </div>
                 ))}
               </div>
             )}
-            <div style={{ display: "flex", fontSize: 22, color: C.muted }}>{c ? clamp(`@${c.handle}: ${c.title}`, 60) : ""}</div>
+            <div style={{ display: "flex", fontSize: 20, fontFamily: "Geist Mono", color: D.faint }}>{c ? clamp(`@${c.handle} · ${host(appUrl())}`, 52) : host(appUrl())}</div>
           </div>
         </div>
       </div>

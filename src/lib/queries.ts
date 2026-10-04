@@ -229,3 +229,14 @@ export async function getTopBuilders(n = 5) {
   const users = await db.user.findMany({ where: { id: { in: ids } }, select: { id: true, handle: true, avatarUrl: true } });
   return ids.map((id) => users.find((u) => u.id === id)!).filter(Boolean);
 }
+
+/** Headline numbers for the landing page. */
+export async function getStats() {
+  const now = new Date();
+  const [live, votes, shipped] = await Promise.all([
+    db.campaign.count({ where: { status: "open", closesAt: { gt: now } } }),
+    db.vote.count(),
+    db.campaign.count({ where: { shippedProjectId: { not: null }, shippedAt: { not: null } } }),
+  ]);
+  return { live, votes, shipped };
+}
