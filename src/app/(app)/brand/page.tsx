@@ -8,13 +8,13 @@ export const metadata = {
   alternates: { canonical: "/brand" },
 };
 
-const COLORS: { name: string; hex: string; use: string; dark?: boolean }[] = [
-  { name: "Ship Green", hex: "#2F7A4A", use: "Primary actions, the mark, the “Or”", dark: true },
-  { name: "Ink", hex: "#1A1A1A", use: "Text and dark surfaces", dark: true },
-  { name: "Paper", hex: "#FAFAF8", use: "Page background" },
-  { name: "Signal Green", hex: "#7FD19B", use: "Green on dark backgrounds" },
-  { name: "Mint", hex: "#E7F4EC", use: "Tints, selected states" },
-  { name: "Stone", hex: "#6B6B66", use: "Secondary text", dark: true },
+const COLORS: { name: string; hex: string; use: string }[] = [
+  { name: "Forest", hex: "#336021", use: "Ship. Primary actions, the mark, progress" },
+  { name: "Ember", hex: "#E68C3A", use: "The “Or”, highlights, accents on dark" },
+  { name: "Charcoal", hex: "#272525", use: "Text and dark surfaces" },
+  { name: "Paper", hex: "#F4F2EF", use: "Page background" },
+  { name: "Moss", hex: "#E6EDDF", use: "Green tints, selected states" },
+  { name: "Apricot", hex: "#FBE9D7", use: "Orange tints, boosts" },
 ];
 
 const FILES: [string, string][] = [
@@ -38,7 +38,7 @@ const card = "rounded-[10px] border border-border bg-white";
 export default function BrandPage() {
   return (
     <div className="max-w-[760px]">
-      <PageHeader eyebrow="Brand kit" title="ShipOrSkip, properly.">
+      <PageHeader eyebrow="Brand kit" title="Builders vote. You ship.">
         Logos, colors, type and voice. Writing about us or making something with us? Use these.
       </PageHeader>
 
@@ -57,7 +57,7 @@ export default function BrandPage() {
         </div>
         <div className={`${card} flex min-h-[150px] flex-col justify-center gap-2 p-6 text-[15px] text-muted-2`}>
           <p className="m-0">
-            The mark is an upvote resting on a finish line. The green <b className="text-green">Or</b> is the decision.
+            The mark is an upvote over an ember finish line. The orange <b className="text-orange-text">Or</b> is the decision.
           </p>
           <p className="m-0">Give the logo room: at least the mark’s height on every side. Don’t recolor, stretch or outline it.</p>
         </div>
@@ -68,6 +68,20 @@ export default function BrandPage() {
             ↓ {label}
           </a>
         ))}
+      </div>
+
+      <Eyebrow className="mt-10 mb-3">Tagline</Eyebrow>
+      <div className="grid gap-3 sm:grid-cols-[1.4fr_1fr]">
+        <div className="rounded-[10px] bg-ink p-6 text-white">
+          <div className="text-[34px] leading-none font-bold tracking-[-.045em]">
+            Builders vote. <span className="text-orange">You ship.</span>
+          </div>
+          <div className="mt-3 text-[14px] text-faint">Primary. Use it in headlines, bios, share cards and pitches.</div>
+        </div>
+        <div className={`${card} flex flex-col justify-center p-6`}>
+          <div className="text-[22px] leading-none font-bold tracking-[-.03em]">Ship it or skip it.</div>
+          <div className="mt-3 text-[14px] text-muted-2">Secondary. Calls to action and sign-offs.</div>
+        </div>
       </div>
 
       <Eyebrow className="mt-10 mb-3">Name</Eyebrow>

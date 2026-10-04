@@ -17,7 +17,7 @@ export default async function Landing() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@graph": [
-      { "@type": "WebSite", name: "ShipOrSkip", url: appUrl(), description: "Too many side projects? Other builders vote on the one you should ship." },
+      { "@type": "WebSite", name: "ShipOrSkip", url: appUrl(), description: "Builders vote. You ship. Post your unfinished side projects and let other builders pick the one worth finishing." },
       { "@type": "Organization", name: "ShipOrSkip", url: appUrl(), logo: `${appUrl()}/icon-512.png` },
     ],
   };
@@ -57,13 +57,13 @@ export default async function Landing() {
             )}
           </Reveal>
           <HeroHeadline
-            text="You can’t finish them all. Let builders pick the one you"
+            lines={["Builders vote.", "You"]}
             accent="ship."
-            className="m-0 mb-5 text-[clamp(38px,5.4vw,62px)] leading-[1.02] font-bold tracking-[-.04em] text-balance"
+            className="m-0 mb-6 text-[clamp(50px,6.6vw,80px)] leading-[.98] font-bold tracking-[-.05em]"
           />
           <Reveal delay={0.55} y={10}>
-            <p className="m-0 mb-7 max-w-[470px] text-lg text-pretty text-muted">
-              Line up {MIN_PROJECTS}–{MAX_PROJECTS} half-built repos. For {CAMPAIGN_DAYS} days, other indie hackers vote and tell you why. Then you commit to the winner and actually ship it.
+            <p className="m-0 mb-8 max-w-[460px] text-[19px] leading-relaxed text-pretty text-muted">
+              Too many side projects? Post {MIN_PROJECTS}–{MAX_PROJECTS} from GitHub. Other builders pick the one worth finishing, and tell you why. <b className="font-semibold text-ink">You get your answer in {CAMPAIGN_DAYS} days.</b>
             </p>
           </Reveal>
           <Reveal delay={0.68} y={10}>
@@ -132,9 +132,9 @@ export default async function Landing() {
               ["03", "Commit and ship", "Publicly commit to the winner, then mark it shipped when it’s live. No more maybe-next-weekend.", <span key="i" className="text-[15px]">🚀</span>],
             ] as const
           ).map(([n, t, d, icon]) => (
-            <StaggerItem key={n} lift className="group relative overflow-hidden rounded-2xl border border-border bg-white p-6 transition-shadow hover:shadow-[0_18px_40px_-18px_rgba(26,26,26,.25)]">
+            <StaggerItem key={n} lift className="group relative overflow-hidden rounded-2xl border border-border bg-white p-6 transition-shadow hover:shadow-[0_18px_40px_-18px_rgba(39,37,37,.25)]">
               <span aria-hidden className="pointer-events-none absolute -top-6 -right-2 font-mono text-[96px] leading-none font-bold text-fill-2 transition-colors group-hover:text-green-tint-3">{n}</span>
-              <div className="relative mb-5 grid h-11 w-11 place-items-center rounded-xl bg-green text-white shadow-[0_8px_20px_-8px_rgba(47,122,74,.6)]">{icon}</div>
+              <div className="relative mb-5 grid h-11 w-11 place-items-center rounded-xl bg-green text-white shadow-[0_8px_20px_-8px_rgba(51,96,33,.6)]">{icon}</div>
               <div className="relative mb-1.5 text-lg font-bold tracking-[-.01em]">{t}</div>
               <div className="relative text-[15px] text-pretty text-muted-2">{d}</div>
             </StaggerItem>
@@ -200,7 +200,7 @@ export default async function Landing() {
         <div className="cta-dark relative flex flex-wrap items-center justify-between gap-6 overflow-hidden rounded-3xl bg-ink px-6 py-10 text-white sm:px-12 sm:py-16">
           <Mark size={260} className="float-slow pointer-events-none absolute -right-12 -bottom-20 opacity-[.09] max-sm:hidden" />
           <div className="relative">
-            <Eyebrow tone="bright" className="mb-2">Ship it or skip it</Eyebrow>
+            <Eyebrow tone="accent" className="mb-2">Ship it or skip it</Eyebrow>
             <h2 className="m-0 mb-2 text-[28px] leading-[1.08] font-bold tracking-[-.035em] sm:text-[44px]">Which one should you finish?</h2>
             <p className="m-0 text-faint">Stop guessing. Get a straight answer in {CAMPAIGN_DAYS} days.</p>
           </div>

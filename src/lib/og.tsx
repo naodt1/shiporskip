@@ -25,7 +25,7 @@ export async function ogOptions() {
   return { ...OG_SIZE, fonts: await ogFonts() };
 }
 
-const C = { ink: "#1a1a1a", bg: "#fafaf8", border: "#e6e6e2", fill: "#f0f0ec", muted: "#6b6b66", faint: "#b5b5ae", green: "#2f7a4a", tint: "#e7f4ec", greenText: "#1f5c36" };
+const C = { ink: "#272525", bg: "#f4f2ef", border: "#e3dfd9", fill: "#ebe8e3", muted: "#6d6863", faint: "#b5afa8", green: "#336021", tint: "#e6eddf", greenText: "#2b4f1c" };
 export { C as OG_COLORS };
 
 /** Satori renders PNG, JPEG and GIF. Returns a data URL, or null for anything else. */
@@ -53,7 +53,7 @@ export function Mark({ size = 44 }: { size?: number }) {
     <svg width={size} height={size} viewBox="0 0 32 32">
       <rect width="32" height="32" rx="8" fill={C.green} />
       <path d="M9 18.5 16 11.5l7 7" fill="none" stroke="#fff" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M10.5 23.5h11" stroke="#fff" strokeWidth="3.2" strokeLinecap="round" opacity=".55" />
+      <path d="M10.5 23.5h11" stroke="#e68c3a" strokeWidth="3.2" strokeLinecap="round" />
     </svg>
   );
 }
@@ -84,8 +84,8 @@ export function Thumb({ src, name, width, height, radius = 16, fontSize = 64 }: 
 
 export const clamp = (s: string, n: number) => (s.length > n ? s.slice(0, n - 1).trimEnd() + "…" : s);
 
-/** Dark share-card palette: deep green-black canvas, white type, signal green accents. */
-export const D = { bg: "#0d120f", panel: "#151c18", line: "rgba(255,255,255,.08)", text: "#ffffff", muted: "#9aa59e", faint: "#5d6862", green: "#2f7a4a", bright: "#7fd19b" };
+/** Dark share-card palette: charcoal canvas, white type, forest green + ember accents. */
+export const D = { bg: "#1d1b1b", panel: "#2c2a2a", line: "rgba(255,255,255,.08)", text: "#ffffff", muted: "#aaa39c", faint: "#757069", green: "#336021", accent: "#e68c3a" };
 
 /** Full-bleed dark backdrop: faint grid, green glows. Place first inside a relative, overflow-hidden root. */
 export function Backdrop({ glow = "top-right" }: { glow?: "top-right" | "bottom-left" | "center" }) {
@@ -100,8 +100,9 @@ export function Backdrop({ glow = "top-right" }: { glow?: "top-right" | "bottom-
           opacity: 0.6,
         }}
       />
-      <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, display: "flex", backgroundImage: `radial-gradient(ellipse 60% 70% at ${at}, rgba(47,122,74,.55), transparent 70%)` }} />
-      <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, display: "flex", backgroundImage: "radial-gradient(ellipse 80% 60% at 50% 120%, rgba(13,18,15,1), transparent 70%)" }} />
+      <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, display: "flex", backgroundImage: `radial-gradient(ellipse 60% 70% at ${at}, rgba(51,96,33,.75), transparent 70%)` }} />
+      <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, display: "flex", backgroundImage: "radial-gradient(ellipse 35% 40% at 100% 100%, rgba(230,140,58,.22), transparent 70%)" }} />
+      <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, display: "flex", backgroundImage: "radial-gradient(ellipse 80% 60% at 50% 120%, rgba(29,27,27,1), transparent 70%)" }} />
     </div>
   );
 }
@@ -112,7 +113,7 @@ export function BrandDark({ size = 30 }: { size?: number }) {
     <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
       <Mark size={size + 14} />
       <div style={{ display: "flex", fontSize: size + 4, fontWeight: 700, color: D.text, fontFamily: "Geist", letterSpacing: -(size + 4) * 0.035 }}>
-        Ship<span style={{ color: D.bright }}>Or</span>Skip
+        Ship<span style={{ color: D.accent }}>Or</span>Skip
       </div>
     </div>
   );
@@ -122,8 +123,8 @@ export function BrandDark({ size = 30 }: { size?: number }) {
 export function Pill({ children, dot = false, tone = "dark" }: { children: React.ReactNode; dot?: boolean; tone?: "dark" | "green" }) {
   const green = tone === "green";
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 18px", borderRadius: 999, background: green ? D.green : "rgba(255,255,255,.06)", border: `1.5px solid ${green ? D.green : "rgba(255,255,255,.12)"}`, color: green ? "#fff" : D.bright, fontSize: 20, fontWeight: 700, fontFamily: "Geist Mono", letterSpacing: 1 }}>
-      {dot && <div style={{ display: "flex", width: 10, height: 10, borderRadius: 999, background: D.bright, boxShadow: "0 0 12px rgba(127,209,155,.9)" }} />}
+    <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 18px", borderRadius: 999, background: green ? D.green : "rgba(255,255,255,.06)", border: `1.5px solid ${green ? D.green : "rgba(255,255,255,.12)"}`, color: green ? "#fff" : D.accent, fontSize: 20, fontWeight: 700, fontFamily: "Geist Mono", letterSpacing: 1 }}>
+      {dot && <div style={{ display: "flex", width: 10, height: 10, borderRadius: 999, background: D.accent, boxShadow: "0 0 12px rgba(230,140,58,.9)" }} />}
       {children}
     </div>
   );

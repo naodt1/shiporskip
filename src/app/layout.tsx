@@ -7,11 +7,11 @@ import "./globals.css";
 const geist = localFont({ src: "../../assets/fonts/Geist-Variable.woff2", weight: "100 900", variable: "--font-geist", display: "swap" });
 const geistMono = localFont({ src: "../../assets/fonts/GeistMono-Variable.woff2", weight: "100 900", variable: "--font-geist-mono", display: "swap" });
 
-const description = "Too many side projects? Post 2–5 unfinished repos from GitHub, let other builders vote on the one you should finish, and ship the winner.";
+const description = "Builders vote. You ship. Post 2–5 unfinished side projects from GitHub, get votes and reasons in 3 days, and finish the one people actually want.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(appUrl()),
-  title: { default: "ShipOrSkip · Let builders pick the side project you ship", template: "%s · ShipOrSkip" },
+  title: { default: "ShipOrSkip · Builders vote. You ship.", template: "%s · ShipOrSkip" },
   description,
   applicationName: "ShipOrSkip",
   keywords: ["side projects", "indie hackers", "build in public", "GitHub", "community voting", "ship it", "unfinished projects", "maker community"],
@@ -27,7 +27,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#fafaf8",
+  themeColor: "#f4f2ef",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

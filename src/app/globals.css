@@ -5,30 +5,34 @@
   --font-sans: var(--font-geist), system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, Menlo, monospace;
 
-  --color-ink: #1a1a1a;
-  --color-ink-hover: #333;
-  --color-bg: #fafaf8;
+  /* Brand palette: Paper #F4F2EF · Forest #336021 · Charcoal #272525 · Ember #E68C3A */
+  --color-ink: #272525;
+  --color-ink-hover: #3a3737;
+  --color-bg: #f4f2ef;
   --color-card: #fff;
-  --color-border: #e6e6e2;
-  --color-divider: #eeeeea;
-  --color-outline: #d6d6d0;
-  --color-dash: #c8c8c2;
-  --color-muted: #55554f;
-  --color-muted-2: #6b6b66;
-  --color-muted-3: #8a8a84;
-  --color-faint: #b5b5ae;
-  --color-fill: #f0f0ec;
-  --color-fill-2: #f4f4f0;
-  --color-fill-3: #ecece6;
-  --color-green: #2f7a4a;
-  --color-green-hover: #256a3e;
-  --color-green-tint: #d4ecdc;
-  --color-green-tint-2: #e7f4ec;
-  --color-green-tint-3: #f3faf5;
-  --color-green-text: #1f5c36;
-  --color-green-bright: #7fd19b; /* green on dark backgrounds */
-  --color-boost: #fff4cc;
-  --color-boost-text: #6b5400;
+  --color-border: #e3dfd9;
+  --color-divider: #ebe8e3;
+  --color-outline: #d4cfc8;
+  --color-dash: #c6c0b8;
+  --color-muted: #55504c;
+  --color-muted-2: #6d6863;
+  --color-muted-3: #8a847e;
+  --color-faint: #b5afa8;
+  --color-fill: #ebe8e3;
+  --color-fill-2: #efece8;
+  --color-fill-3: #e4e0da;
+  --color-green: #336021;
+  --color-green-hover: #284d19;
+  --color-green-tint: #d3e0c8;
+  --color-green-tint-2: #e6eddf;
+  --color-green-tint-3: #f1f4ec;
+  --color-green-text: #2b4f1c;
+  --color-orange: #e68c3a;
+  --color-orange-hover: #d47a29;
+  --color-orange-tint: #fbe9d7;
+  --color-orange-text: #8f4c12; /* orange-family text on light backgrounds (AA) */
+  --color-boost: #fbe9d7;
+  --color-boost-text: #8f4c12;
   --color-urgent: #b3261e;
   --color-urgent-bg: #fdecea;
 }
@@ -71,10 +75,11 @@
   z-index: -1;
   pointer-events: none;
   background-image:
-    radial-gradient(ellipse 70% 60% at 75% 10%, color-mix(in srgb, var(--color-green) 10%, transparent), transparent 70%),
+    radial-gradient(ellipse 70% 60% at 75% 10%, color-mix(in srgb, var(--color-green) 12%, transparent), transparent 70%),
+    radial-gradient(ellipse 40% 40% at 95% 60%, color-mix(in srgb, var(--color-orange) 12%, transparent), transparent 70%),
     linear-gradient(to right, color-mix(in srgb, var(--color-ink) 5%, transparent) 1px, transparent 1px),
     linear-gradient(to bottom, color-mix(in srgb, var(--color-ink) 5%, transparent) 1px, transparent 1px);
-  background-size: 100% 100%, 32px 32px, 32px 32px;
+  background-size: 100% 100%, 100% 100%, 32px 32px, 32px 32px;
   mask-image: linear-gradient(to bottom, #000 55%, transparent);
 }
 
@@ -115,10 +120,11 @@
 /* Dark CTA: green glow from the corner plus a faint grid. */
 .cta-dark {
   background-image:
-    radial-gradient(ellipse 60% 80% at 100% 100%, color-mix(in srgb, var(--color-green) 45%, transparent), transparent 70%),
+    radial-gradient(ellipse 60% 80% at 100% 100%, color-mix(in srgb, var(--color-green) 70%, transparent), transparent 70%),
+    radial-gradient(ellipse 30% 50% at 0% 0%, color-mix(in srgb, var(--color-orange) 25%, transparent), transparent 70%),
     linear-gradient(to right, rgba(255,255,255,.04) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255,255,255,.04) 1px, transparent 1px);
-  background-size: 100% 100%, 32px 32px, 32px 32px;
+  background-size: 100% 100%, 100% 100%, 32px 32px, 32px 32px;
 }
 
 .float-slow { animation: float-slow 7s ease-in-out infinite; }

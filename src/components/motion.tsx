@@ -67,44 +67,47 @@ export function CountUp({ to, className }: { to: number; className?: string }) {
   );
 }
 
-/** Word-by-word headline; the last word is green with a hand-drawn underline. */
-export function HeroHeadline({ text, accent, className }: { text: string; accent: string; className?: string }) {
-  const words = text.split(" ");
+/** Word-by-word headline, one block per line; `accent` ends the last line in green with a hand-drawn ember underline. */
+export function HeroHeadline({ lines, accent, className }: { lines: string[]; accent: string; className?: string }) {
+  let k = 0;
+  const step = 0.07;
+  const words = lines.join(" ").split(" ").length;
   return (
-    <h1 className={className} aria-label={`${text} ${accent}`}>
-      {words.map((w, i) => (
-        <motion.span
-          key={i}
-          aria-hidden
-          className="inline-block"
-          initial={{ opacity: 0, y: "0.4em", filter: "blur(6px)" }}
-          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-          transition={{ duration: 0.55, ease: EASE, delay: 0.05 + i * 0.045 }}
-        >
-          {w}&nbsp;
-        </motion.span>
+    <h1 className={className} aria-label={`${lines.join(" ")} ${accent}`}>
+      {lines.map((line, li) => (
+        <span key={li} aria-hidden className="block whitespace-nowrap">
+          {line.split(" ").map((w) => {
+            const d = 0.05 + k++ * step;
+            return (
+              <motion.span key={k} className="inline-block" initial={{ opacity: 0, y: "0.4em", filter: "blur(8px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} transition={{ duration: 0.6, ease: EASE, delay: d }}>
+                {w}&nbsp;
+              </motion.span>
+            );
+          })}
+          {li === lines.length - 1 && (
+            <motion.span
+              className="relative inline-block text-green"
+              initial={{ opacity: 0, y: "0.4em", scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ type: "spring", stiffness: 260, damping: 18, delay: 0.1 + words * step }}
+            >
+              {accent}
+              <svg viewBox="0 0 200 20" preserveAspectRatio="none" className="absolute -bottom-[0.1em] left-0 h-[0.22em] w-[92%] overflow-visible text-orange" aria-hidden>
+                <motion.path
+                  d="M3 14 C 50 4, 120 4, 197 10"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="7"
+                  strokeLinecap="round"
+                  initial={{ pathLength: 0 }}
+                  animate={{ pathLength: 1 }}
+                  transition={{ duration: 0.7, ease: EASE, delay: 0.5 + words * step }}
+                />
+              </svg>
+            </motion.span>
+          )}
+        </span>
       ))}
-      <motion.span
-        aria-hidden
-        className="relative inline-block text-green"
-        initial={{ opacity: 0, y: "0.4em", scale: 0.9 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ type: "spring", stiffness: 260, damping: 18, delay: 0.1 + words.length * 0.045 }}
-      >
-        {accent}
-        <svg viewBox="0 0 200 20" preserveAspectRatio="none" className="absolute -bottom-[0.12em] left-0 h-[0.28em] w-[94%] overflow-visible" aria-hidden>
-          <motion.path
-            d="M3 14 C 50 4, 120 4, 197 10"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="6"
-            strokeLinecap="round"
-            initial={{ pathLength: 0, opacity: 0 }}
-            animate={{ pathLength: 1, opacity: 0.45 }}
-            transition={{ duration: 0.7, ease: EASE, delay: 0.45 + words.length * 0.045 }}
-          />
-        </svg>
-      </motion.span>
     </h1>
   );
 }

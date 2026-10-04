@@ -67,7 +67,7 @@ export function AuthModal({
 
   return (
     <>
-      <motion.div onClick={onClose} className="fixed inset-0 z-30 bg-[rgba(26,26,26,.4)] backdrop-blur-[2px]" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} />
+      <motion.div onClick={onClose} className="fixed inset-0 z-30 bg-[rgba(39,37,37,.4)] backdrop-blur-[2px]" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} />
       <motion.div
         initial={{ opacity: 0, scale: 0.95, y: 12 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}

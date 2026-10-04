@@ -4,11 +4,11 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "ShipOrSkip",
     short_name: "ShipOrSkip",
-    description: "Let builders pick the side project you ship.",
+    description: "Builders vote. You ship.",
     start_url: "/feed",
     display: "standalone",
-    background_color: "#fafaf8",
-    theme_color: "#2f7a4a",
+    background_color: "#f4f2ef",
+    theme_color: "#336021",
     icons: [
       { src: "/icon-192.png", sizes: "192x192", type: "image/png" },
       { src: "/icon-512.png", sizes: "512x512", type: "image/png" },

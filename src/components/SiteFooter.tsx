@@ -15,7 +15,7 @@ export function SiteFooter() {
           <Link href="/" aria-label="ShipOrSkip home" className="no-underline">
             <Logo />
           </Link>
-          <p className="m-0 text-[15px] text-pretty text-muted-2">Ship it or skip it. Builders help you pick the side project worth finishing.</p>
+          <p className="m-0 text-[15px] text-pretty text-muted-2">Builders vote. You ship. The fastest way to pick the side project worth finishing.</p>
         </div>
         <div className="flex gap-14">
           {COLS.map(([head, links]) => (
@@ -41,8 +41,8 @@ export function SiteFooter() {
 }
 
 /** Small uppercase mono label used above headings and in cards. */
-export function Eyebrow({ children, className = "", tone = "muted" }: { children: React.ReactNode; className?: string; tone?: "muted" | "green" | "bright" }) {
+export function Eyebrow({ children, className = "", tone = "muted" }: { children: React.ReactNode; className?: string; tone?: "muted" | "green" | "accent" }) {
   return (
-    <div className={`font-mono text-[11px] font-bold tracking-[.08em] uppercase ${{ muted: "text-muted-3", green: "text-green", bright: "text-green-bright" }[tone]} ${className}`}>{children}</div>
+    <div className={`font-mono text-[11px] font-bold tracking-[.08em] uppercase ${{ muted: "text-muted-3", green: "text-green", accent: "text-orange" }[tone]} ${className}`}>{children}</div>
   );
 }

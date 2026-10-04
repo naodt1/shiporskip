@@ -8,9 +8,9 @@ import { EASE } from "./motion";
 type Row = { name: string; desc: string; votes: number; color: string };
 
 const START: Row[] = [
-  { name: "tallyho", desc: "Invoices that send themselves", votes: 96, color: "#2f7a4a" },
-  { name: "quietcal", desc: "Auto-blocks focus time", votes: 77, color: "#3b5bdb" },
-  { name: "plotline", desc: "Markdown in, timeline out", votes: 41, color: "#b0561f" },
+  { name: "tallyho", desc: "Invoices that send themselves", votes: 96, color: "#336021" },
+  { name: "quietcal", desc: "Auto-blocks focus time", votes: 77, color: "#e68c3a" },
+  { name: "plotline", desc: "Markdown in, timeline out", votes: 41, color: "#3a3737" },
 ];
 
 const REASONS: [string, number, string][] = [
@@ -66,9 +66,9 @@ export function LandingDemo() {
       <div aria-hidden className="absolute inset-x-6 -bottom-3 h-full rounded-2xl border border-border bg-white/70 shadow-sm" />
       <div aria-hidden className="absolute inset-x-12 -bottom-6 h-full rounded-2xl border border-border bg-white/40" />
 
-      <div className="relative rounded-2xl border border-border bg-white p-4.5 shadow-[0_1px_2px_rgba(26,26,26,.04),0_24px_48px_-12px_rgba(26,26,26,.14)] sm:p-5">
+      <div className="relative rounded-2xl border border-border bg-white p-4.5 shadow-[0_1px_2px_rgba(39,37,37,.04),0_24px_48px_-12px_rgba(39,37,37,.14)] sm:p-5">
         <div className="mb-2 flex items-center gap-2 text-[13px] text-muted-2">
-          <span className="grid h-[22px] w-[22px] place-items-center rounded-full bg-[#b0561f] text-[11px] font-bold text-white">M</span>@mara
+          <span className="grid h-[22px] w-[22px] place-items-center rounded-full bg-[#b4532a] text-[11px] font-bold text-white">M</span>@mara
           <span className="flex items-center gap-1 rounded-full bg-fill px-2 py-px font-mono text-xs text-muted">
             <Clock size={12} />
             2d
@@ -119,7 +119,7 @@ export function LandingDemo() {
                     {bump?.name === r.name && (
                       <motion.span
                         key={bump.k}
-                        className="absolute -top-1 right-0 text-xs text-green"
+                        className="absolute -top-1 right-0 text-xs font-bold text-orange-text"
                         initial={{ opacity: 0, y: 4 }}
                         animate={{ opacity: [0, 1, 0], y: -14 }}
                         transition={{ duration: 0.9, ease: "easeOut" }}
@@ -152,7 +152,7 @@ export function LandingDemo() {
       {/* Floating proof chip */}
       <motion.div
         aria-hidden
-        className="absolute -top-4 -right-2 rounded-full border border-green/20 bg-white px-3 py-1.5 font-mono text-xs font-bold text-green shadow-[0_8px_24px_-8px_rgba(47,122,74,.45)] sm:-right-5"
+        className="absolute -top-4 -right-2 rounded-full bg-orange px-3 py-1.5 font-mono text-xs font-bold text-ink shadow-[0_8px_24px_-8px_rgba(230,140,58,.7)] sm:-right-5"
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1, y: [0, -6, 0] }}
         transition={{ opacity: { delay: 1 }, scale: { delay: 1, type: "spring" }, y: { duration: 4, repeat: Infinity, ease: "easeInOut", delay: 1.4 } }}

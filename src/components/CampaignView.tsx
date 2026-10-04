@@ -93,7 +93,7 @@ export function CampaignView({ c, focusId }: { c: CampaignDetail; focusId?: stri
               animate={popped === p.id ? { scale: [1, 1.025, 1] } : undefined}
               whileHover={{ y: -3 }}
               transition={{ type: "spring", stiffness: 400, damping: 26 }}
-              className={`flex scroll-mt-4 flex-col overflow-hidden rounded-2xl border bg-white transition-shadow hover:shadow-[0_18px_40px_-18px_rgba(26,26,26,.25)] ${isMine ? "border-green shadow-[0_0_0_3px_var(--color-green-tint-2)]" : "border-border"} ${p.id === focusId ? "ring-2 ring-green/70 ring-offset-2 ring-offset-bg" : ""}`}
+              className={`flex scroll-mt-4 flex-col overflow-hidden rounded-2xl border bg-white transition-shadow hover:shadow-[0_18px_40px_-18px_rgba(39,37,37,.25)] ${isMine ? "border-green shadow-[0_0_0_3px_var(--color-green-tint-2)]" : "border-border"} ${p.id === focusId ? "ring-2 ring-green/70 ring-offset-2 ring-offset-bg" : ""}`}
             >
               {p.imageUrl ? (
                 <img src={p.imageUrl} alt="" className="block aspect-[16/9] w-full object-cover sm:aspect-[4/3]" />
@@ -145,7 +145,7 @@ export function CampaignView({ c, focusId }: { c: CampaignDetail; focusId?: stri
                       <span className="relative font-mono font-semibold tabular-nums">
                         <AnimatePresence>
                           {popped === p.id && isMine && (
-                            <motion.span key="plus" className="absolute -top-2 right-0 text-xs text-green" initial={{ opacity: 0, y: 4 }} animate={{ opacity: [0, 1, 0], y: -16 }} transition={{ duration: 1, ease: "easeOut" }}>
+                            <motion.span key="plus" className="absolute -top-2 right-0 text-xs font-bold text-orange-text" initial={{ opacity: 0, y: 4 }} animate={{ opacity: [0, 1, 0], y: -16 }} transition={{ duration: 1, ease: "easeOut" }}>
                               +1
                             </motion.span>
                           )}

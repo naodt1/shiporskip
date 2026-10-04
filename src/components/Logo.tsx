@@ -5,16 +5,16 @@ export function Mark({ size = 28, className = "" }: { size?: number; className?:
     <svg width={size} height={size} viewBox="0 0 32 32" aria-hidden="true" className={`shrink-0 ${className}`}>
       <rect width="32" height="32" rx="8" fill="var(--color-green)" />
       <path d="M9 18.5 16 11.5l7 7" fill="none" stroke="#fff" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M10.5 23.5h11" stroke="#fff" strokeWidth="3.2" strokeLinecap="round" opacity=".55" />
+      <path d="M10.5 23.5h11" stroke="var(--color-orange)" strokeWidth="3.2" strokeLinecap="round" />
     </svg>
   );
 }
 
-/** "Ship·Or·Skip": the green "Or" is the decision the product is about. */
+/** "Ship·Or·Skip": the orange "Or" is the decision the product is about. */
 export function Wordmark({ tone = "light", className = "" }: { tone?: "light" | "dark"; className?: string }) {
   return (
     <span className={`font-bold tracking-[-.035em] whitespace-nowrap ${tone === "dark" ? "text-white" : "text-ink"} ${className}`}>
-      Ship<span className={tone === "dark" ? "text-green-bright" : "text-green"}>Or</span>Skip
+      Ship<span className="text-orange">Or</span>Skip
     </span>
   );
 }

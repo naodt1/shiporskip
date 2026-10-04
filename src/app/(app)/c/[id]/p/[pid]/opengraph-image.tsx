@@ -35,12 +35,12 @@ export default async function Image({ params }: { params: Promise<{ id: string; 
 
         <div style={{ position: "relative", display: "flex", flexDirection: "column", flex: 1 }}>
           <BrandDark size={24} />
-          <div style={{ display: "flex", marginTop: 44, fontSize: 20, fontFamily: "Geist Mono", fontWeight: 700, letterSpacing: 2, color: D.bright }}>VOTE TO SHIP</div>
+          <div style={{ display: "flex", marginTop: 44, fontSize: 20, fontFamily: "Geist Mono", fontWeight: 700, letterSpacing: 2, color: D.accent }}>VOTE TO SHIP</div>
           <div style={{ display: "flex", fontSize: 76, fontWeight: 700, lineHeight: 1, letterSpacing: -3, marginTop: 10 }}>{clamp(p?.name ?? "Project", 14)}</div>
           <div style={{ display: "flex", fontSize: 27, lineHeight: 1.3, color: D.muted, marginTop: 16 }}>{clamp(p?.oneliner ?? "", 84)}</div>
           {p?.offer && (
             <div style={{ display: "flex", marginTop: 20 }}>
-              <div style={{ display: "flex", fontSize: 21, fontWeight: 700, background: "rgba(127,209,155,.14)", color: D.bright, border: "1.5px solid rgba(127,209,155,.35)", borderRadius: 10, padding: "6px 14px" }}>
+              <div style={{ display: "flex", fontSize: 21, fontWeight: 700, background: "rgba(230,140,58,.14)", color: D.accent, border: "1.5px solid rgba(230,140,58,.35)", borderRadius: 10, padding: "6px 14px" }}>
                 {clamp(p.offer, 36)}
               </div>
             </div>

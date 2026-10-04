@@ -131,7 +131,7 @@ export function AppShell({ user, topBuilders, githubMock, children }: { user: Pu
               <Eyebrow className="mb-2.5">Top builders</Eyebrow>
               <Link href="/leaderboards" className="flex" aria-label="Leaderboards">
                 {topBuilders.map((b, k) => (
-                  <Avatar key={b.id} handle={b.handle} url={b.avatarUrl} size={30} ring="#fafaf8" className={k ? "-ml-2" : ""} />
+                  <Avatar key={b.id} handle={b.handle} url={b.avatarUrl} size={30} ring="#f4f2ef" className={k ? "-ml-2" : ""} />
                 ))}
               </Link>
             </div>
